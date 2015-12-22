@@ -17,5 +17,8 @@
     "presets": [
       "es2015"
     ]
+  },
+  "dependencies": {
+    "immutable": "~3.7.6"
   }
 }
