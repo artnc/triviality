@@ -1,9 +1,12 @@
 var webpack = require('webpack');
 
+var PROD = process.env.NODE_ENV === 'production';
 var WEBPACK_DEV_PORT = 8080;
 
 module.exports = {
-  entry: [
+  entry: PROD ? [
+    __dirname + '/src/index.jsx'
+  ] : [
     'webpack-dev-server/client?http://localhost:' + WEBPACK_DEV_PORT,
     'webpack/hot/only-dev-server',
     __dirname + '/src/index.jsx'
@@ -13,7 +16,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'react-hot!babel'
+        loader: PROD ? 'babel' : 'react-hot!babel'
       }
     ]
   },
@@ -27,9 +30,11 @@ module.exports = {
   },
   devServer: {
     contentBase: __dirname + '/dist',
-    hot: true
+    hot: !PROD
   },
-  plugins: [
+  plugins: PROD ? [
+    new webpack.optimize.UglifyJsPlugin()
+  ] : [
     new webpack.HotModuleReplacementPlugin()
   ]
 };
