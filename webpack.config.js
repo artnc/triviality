@@ -1,13 +1,19 @@
+var webpack = require('webpack');
+
+var WEBPACK_DEV_PORT = 8080;
+
 module.exports = {
   entry: [
-    __dirname + '/src/index.js'
+    'webpack-dev-server/client?http://localhost:' + WEBPACK_DEV_PORT,
+    'webpack/hot/only-dev-server',
+    __dirname + '/src/index.jsx'
   ],
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        loader: 'react-hot!babel'
       }
     ]
   },
@@ -20,6 +26,10 @@ module.exports = {
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: __dirname + '/dist'
-  }
+    contentBase: __dirname + '/dist',
+    hot: true
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ]
 };
