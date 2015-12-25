@@ -17,11 +17,15 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: PROD ? 'babel' : 'react-hot!babel'
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
       }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.jsx', '.js', '.css']
   },
   output: {
     path: __dirname + '/dist',

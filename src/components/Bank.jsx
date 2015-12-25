@@ -1,4 +1,6 @@
+import classNames from 'classnames';
 import React from 'react';
+import styles from './Bank.css';
 
 export const Bank = React.createClass({
   render() {
@@ -23,7 +25,7 @@ export const Bank = React.createClass({
     });
 
     return (
-      <table>
+      <table className={classNames(styles.table)}>
         <tbody>
           {grid.map((row, i) => <tr key={i}>{row}</tr>)}
         </tbody>
