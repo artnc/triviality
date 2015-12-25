@@ -8,6 +8,10 @@
     "node": true
   },
   "extends": "eslint:recommended",
+  "globals": {
+    "DEV": false,
+    "PROD": false
+  },
   "parser": "babel-eslint",
   "plugins": [
     "react"

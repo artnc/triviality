@@ -1,22 +1,31 @@
 import webpack from 'webpack';
 
-const PROD = process.env.NODE_ENV === 'production';
 const WEBPACK_DEV_PORT = 8080;
 
-module.exports = {
-  entry: PROD ? [
-    `${__dirname}/src/index.jsx`
-  ] : [
+/* Environment-specific config */
+
+const PROD = process.env.NODE_ENV === 'production';
+const envConfig = PROD ? {
+  entry: [],
+  jsLoaders: [],
+  plugins: [new webpack.optimize.UglifyJsPlugin()]
+} : {
+  entry: [
     `webpack-dev-server/client?http://localhost:${WEBPACK_DEV_PORT}`,
-    'webpack/hot/only-dev-server',
-    `${__dirname}/src/index.jsx`
+    'webpack/hot/only-dev-server'
   ],
+  jsLoaders: ['react-hot'],
+  plugins: [new webpack.HotModuleReplacementPlugin()]
+};
+
+module.exports = {
+  entry: [...envConfig.entry, `${__dirname}/src/index.jsx`],
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: PROD ? 'babel' : 'react-hot!babel'
+        loaders: [...envConfig.jsLoaders, 'babel']
       },
       {
         test: /\.s?css$/,
@@ -34,11 +43,13 @@ module.exports = {
   },
   devServer: {
     contentBase: `${__dirname}/dist`,
-    hot: !PROD
+    hot: true
   },
-  plugins: PROD ? [
-    new webpack.optimize.UglifyJsPlugin()
-  ] : [
-    new webpack.HotModuleReplacementPlugin()
+  plugins: [
+    ...envConfig.plugins,
+    new webpack.DefinePlugin({
+      DEV: !PROD,
+      PROD
+    })
   ]
 };
