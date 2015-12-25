@@ -2,20 +2,32 @@ import React from 'react';
 
 export const Bank = React.createClass({
   render() {
-    const {tiles, onTileClick} = this.props;
+    const {
+      cols,
+      onTileClick,
+      rows,
+      tiles
+    } = this.props;
+
+    // Construct cell grid using tiles' x and y coordinates
+    const grid = Array(rows).fill().map(() => Array(cols));
+    tiles.forEach((tile, i) => {
+      grid[Math.floor(i / cols)][i % cols] = (
+        <td
+          key={tile.get('id')}
+          onClick={() => {
+            onTileClick(tile.get('id'));
+          }}
+        >{tile.get('letter')}</td>
+      );
+    });
+
     return (
-      <ul>
-        {tiles.map((tile) => {
-          return (
-            <li
-              key={tile.get('id')}
-              onClick={() => {
-                onTileClick(tile.get('id'));
-              }}
-            >{tile.get('letter')}</li>
-          );
-        })}
-      </ul>
+      <table>
+        <tbody>
+          {grid.map((row, i) => <tr key={i}>{row}</tr>)}
+        </tbody>
+      </table>
     );
   }
 });

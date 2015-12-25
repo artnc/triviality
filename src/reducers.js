@@ -36,7 +36,7 @@ const combinedReducer = immutableCombineReducers({
 const app = (state = Immutable.Map({}), action) => {
   switch (action.type) {
     default:
-      return combinedReducer(state, action);
+      return state.merge(combinedReducer(state, action));
   }
 };
 
