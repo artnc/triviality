@@ -104,6 +104,8 @@
     "spaced-comment": 2,
 
     // ES6
+    "arrow-parens": 2,
+    "arrow-spacing": 2,
     "no-var": 2,
     "object-shorthand": 2,
     "prefer-arrow-callback": 2,
