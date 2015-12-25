@@ -1,6 +1,6 @@
-import classNames from 'classnames';
 import React from 'react';
 import styles from './Bank.scss';
+import {Tile} from './Tile';
 
 export const Bank = React.createClass({
   render() {
@@ -15,17 +15,17 @@ export const Bank = React.createClass({
     const grid = Array(rows).fill().map(() => Array(cols));
     tiles.forEach((tile, i) => {
       grid[Math.floor(i / cols)][i % cols] = (
-        <td
-          key={tile.get('id')}
-          onClick={() => {
-            onTileClick(tile.get('id'));
-          }}
-        >{tile.get('letter')}</td>
+        <td key={tile.get('id')}>
+          <Tile
+            onTileClick={onTileClick}
+            tile={tile}
+          />
+        </td>
       );
     });
 
     return (
-      <table className={classNames(styles.table)}>
+      <table className={styles.table}>
         <tbody>
           {grid.map((row, i) => <tr key={i}>{row}</tr>)}
         </tbody>
