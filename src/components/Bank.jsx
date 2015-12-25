@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
-import styles from './Bank.css';
+import styles from './Bank.scss';
 
 export const Bank = React.createClass({
   render() {

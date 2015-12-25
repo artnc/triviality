@@ -1,0 +1,5 @@
+$foo: #f00;
+
+.table {
+  border: 2px solid $foo;
+}

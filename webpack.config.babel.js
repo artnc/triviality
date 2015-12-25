@@ -19,8 +19,8 @@ module.exports = {
         loader: PROD ? 'babel' : 'react-hot!babel'
       },
       {
-        test: /\.css$/,
-        loader: 'style!css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+        test: /\.s?css$/,
+        loader: 'style!css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!sass'
       }
     ]
   },
