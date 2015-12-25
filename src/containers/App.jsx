@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {addTile} from '../actions';
 
-class App extends Component {
+const App = React.createClass({
   render() {
     const {dispatch, tiles} = this.props;
     return (
@@ -20,7 +20,7 @@ class App extends Component {
       </ul>
     );
   }
-}
+});
 
 const mapStateToProps = (state) => {
   return {
