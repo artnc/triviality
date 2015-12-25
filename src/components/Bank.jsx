@@ -1,8 +1,9 @@
 import React from 'react';
+import {createPureComponent} from '../util/react';
 import styles from './Bank.scss';
 import {Tile} from './Tile';
 
-export const Bank = React.createClass({
+export const Bank = createPureComponent({
   render() {
     const {
       cols,

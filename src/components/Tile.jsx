@@ -1,7 +1,8 @@
 import React from 'react';
+import {createPureComponent} from '../util/react';
 import styles from './Tile.scss';
 
-export const Tile = React.createClass({
+export const Tile = createPureComponent({
   render() {
     const {
       onTileClick,
