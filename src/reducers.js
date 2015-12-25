@@ -1,24 +1,6 @@
 import Immutable from 'immutable';
 import {TILE_ADD} from './actions';
 
-const INITIAL_TILES_STATE = Immutable.fromJS([
-  {
-    id: 0,
-    letter: 'A',
-    used: false
-  },
-  {
-    id: 1,
-    letter: 'B',
-    used: false
-  },
-  {
-    id: 2,
-    letter: 'C',
-    used: false
-  }
-]);
-
 const tile = (state, action) => {
   switch (action.type) {
     case TILE_ADD:
@@ -29,7 +11,7 @@ const tile = (state, action) => {
   }
 };
 
-const tiles = (state = INITIAL_TILES_STATE, action) => {
+const tiles = (state, action) => {
   if ('tileId' in action) {
     return state.set(action.tileId, tile(state.get(action.tileId), action));
   }
