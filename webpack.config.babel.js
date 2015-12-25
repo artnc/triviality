@@ -1,15 +1,15 @@
-var webpack = require('webpack');
+import webpack from 'webpack';
 
-var PROD = process.env.NODE_ENV === 'production';
-var WEBPACK_DEV_PORT = 8080;
+const PROD = process.env.NODE_ENV === 'production';
+const WEBPACK_DEV_PORT = 8080;
 
 module.exports = {
   entry: PROD ? [
-    __dirname + '/src/index.jsx'
+    `${__dirname}/src/index.jsx`
   ] : [
-    'webpack-dev-server/client?http://localhost:' + WEBPACK_DEV_PORT,
+    `webpack-dev-server/client?http://localhost:${WEBPACK_DEV_PORT}`,
     'webpack/hot/only-dev-server',
-    __dirname + '/src/index.jsx'
+    `${__dirname}/src/index.jsx`
   ],
   module: {
     loaders: [
@@ -28,12 +28,12 @@ module.exports = {
     extensions: ['', '.jsx', '.js', '.css']
   },
   output: {
-    path: __dirname + '/dist',
+    path: `${__dirname}/dist`,
     publicPath: '/',
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: __dirname + '/dist',
+    contentBase: `${__dirname}/dist`,
     hot: !PROD
   },
   plugins: PROD ? [
