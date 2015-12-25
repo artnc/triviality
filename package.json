@@ -24,7 +24,8 @@
     "css-loader": "~0.23.1",
     "classnames": "~2.2.1",
     "sass-loader": "~3.1.2",
-    "node-sass": "~3.4.2"
+    "node-sass": "~3.4.2",
+    "redux-logger": "~2.3.1"
   },
   "babel": {
     "presets": [
