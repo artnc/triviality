@@ -10,11 +10,11 @@ class App extends Component {
         {tiles.map((tile) => {
           return (
             <li
-              key={tile.id}
+              key={tile.get('id')}
               onClick={() => {
-                dispatch(addTile(tile.id));
+                dispatch(addTile(tile.get('id')));
               }}
-            >{tile.letter}</li>
+            >{tile.get('letter')}</li>
           );
         })}
       </ul>
@@ -24,7 +24,7 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    tiles: state.tiles
+    tiles: state.get('tiles')
   };
 };
 
