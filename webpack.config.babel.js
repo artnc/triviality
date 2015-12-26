@@ -1,3 +1,4 @@
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import webpack from 'webpack';
 
 const WEBPACK_DEV_PORT = 8080;
@@ -35,9 +36,12 @@ export default {
         loaders: [...envConfig.jsLoaders, 'babel']
       },
       {
-        test: /\.s?css$/,
-        loader: 'style!css?modules&importLoaders=1' +
-          '&localIdentName=[name]__[local]___[hash:base64:5]!sass'
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract(
+          'style',
+          'css?modules&importLoaders=1' +
+            '&localIdentName=[name]__[local]___[hash:base64:5]!sass'
+        )
       }
     ]
   },
@@ -47,13 +51,14 @@ export default {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['', '.jsx', '.js', '.css']
+    extensions: ['', '.jsx', '.js', '.scss']
   },
   plugins: [
     ...envConfig.plugins,
     new webpack.DefinePlugin({
       DEV: !PROD,
       PROD
-    })
+    }),
+    new ExtractTextPlugin('styles.css')
   ]
 };

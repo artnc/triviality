@@ -1,3 +1,4 @@
+*.css
 *.sublime-workspace
 /node_modules
 bundle.js
