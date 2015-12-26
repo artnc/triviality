@@ -2,7 +2,7 @@ import cssnano from 'cssnano';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import webpack from 'webpack';
 
-const WEBPACK_DEV_PORT = 8080;
+const WEBPACK_DEV_PORT = 9000;
 
 /* Environment-specific config */
 
