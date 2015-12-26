@@ -6,6 +6,7 @@ import createLogger from 'redux-logger';
 import {convertApiChallengeToState} from './actions';
 import App from './containers/App';
 import app from './reducers';
+import styles from './styles/global.scss';
 
 const middleWare = [];
 
