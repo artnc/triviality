@@ -5,18 +5,18 @@
 @import url(https://fonts.googleapis.com/css?family=Inconsolata:700);
 
 :global {
-  html, body {
-    height: 100%;
-  }
-
   html {
     font-family: 'Alegreya', serif;
     font-weight: 700;
+    height: 100%;
   }
 
   body {
     background: $background-color;
     color: $text-color;
+    cursor: default;
+    height: 100%;
     position: relative;
+    user-select: none;
   }
 }
