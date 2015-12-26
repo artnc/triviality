@@ -18,8 +18,15 @@ const envConfig = PROD ? {
   plugins: [new webpack.HotModuleReplacementPlugin()]
 };
 
-module.exports = {
-  entry: [...envConfig.entry, `${__dirname}/src/index.jsx`],
+/* Base config */
+
+export default {
+  debug: !PROD,
+  devServer: {
+    contentBase: `${__dirname}/dist`,
+    hot: true
+  },
+  entry: [...envConfig.entry, `${__dirname}/src/main.jsx`],
   module: {
     loaders: [
       {
@@ -29,21 +36,18 @@ module.exports = {
       },
       {
         test: /\.s?css$/,
-        loader: 'style!css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!sass'
+        loader: 'style!css?modules&importLoaders=1' +
+          '&localIdentName=[name]__[local]___[hash:base64:5]!sass'
       }
     ]
-  },
-  resolve: {
-    extensions: ['', '.jsx', '.js', '.css']
   },
   output: {
     path: `${__dirname}/dist`,
     publicPath: '/',
     filename: 'bundle.js'
   },
-  devServer: {
-    contentBase: `${__dirname}/dist`,
-    hot: true
+  resolve: {
+    extensions: ['', '.jsx', '.js', '.css']
   },
   plugins: [
     ...envConfig.plugins,
