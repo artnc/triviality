@@ -40,7 +40,7 @@ export default {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract('style', [
           'css?modules&importLoaders=1' +
-            '&localIdentName=[name]_[local]_[hash:base64:4]',
+            '&localIdentName=[name]_[local]_[hash:base64:3]',
           'postcss',
           'sass'
         ].join('!'))

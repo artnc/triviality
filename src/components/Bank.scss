@@ -1,5 +1,5 @@
-$foo: #f00;
+@import '../styles/variables';
 
 .table {
-  border: 2px solid $foo;
+  width: 100%;
 }

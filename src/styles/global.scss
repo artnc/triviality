@@ -4,6 +4,19 @@
 @import url(https://fonts.googleapis.com/css?family=Alegreya:700);
 @import url(https://fonts.googleapis.com/css?family=Inconsolata:700);
 
-:global p {
-  color: $ouch;
+:global {
+  html, body {
+    height: 100%;
+  }
+
+  html {
+    font-family: 'Alegreya', serif;
+    font-weight: 700;
+  }
+
+  body {
+    background: $background-color;
+    color: $text-color;
+    position: relative;
+  }
 }

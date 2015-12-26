@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {addTile} from '../actions';
 import {Bank} from '../components/Bank';
 import {Prompt} from '../components/Prompt';
+import styles from '../containers/App.scss';
 
 const App = React.createClass({
   render() {
@@ -15,7 +16,7 @@ const App = React.createClass({
     } = this.props;
 
     return (
-      <div>
+      <div className={styles.app}>
         <Prompt>{prompt}</Prompt>
         <Bank
           cols={cols}
