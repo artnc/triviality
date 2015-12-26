@@ -1,3 +1,4 @@
+import cssnano from 'cssnano';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import webpack from 'webpack';
 
@@ -37,11 +38,12 @@ export default {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract(
-          'style',
+        loader: ExtractTextPlugin.extract('style', [
           'css?modules&importLoaders=1' +
-            '&localIdentName=[name]__[local]___[hash:base64:5]!sass'
-        )
+            '&localIdentName=[name]__[local]___[hash:base64:5]',
+          'postcss',
+          'sass'
+        ].join('!'))
       }
     ]
   },
@@ -60,5 +62,17 @@ export default {
       PROD
     }),
     new ExtractTextPlugin('styles.css')
+  ],
+  postcss: [
+    cssnano({
+      autoprefixer: {
+        add: true,
+        remove: true,
+        browsers: ['last 2 versions']
+      },
+      discardComments: {
+        removeAll: true
+      }
+    })
   ]
 };
