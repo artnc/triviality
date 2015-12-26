@@ -20,13 +20,12 @@ const tiles = (state, action) => {
 
 // Rewrite of Redux.combineReducers to support stores of type Immutable.Map
 const immutableCombineReducers = (reducers) => {
+  const reducerKeys = Object.keys(reducers);
   return (state = Immutable.Map({}), action) => {
-    return Immutable.fromJS(Object.keys(reducers).reduce(
-      (nextState, key) => {
-        return nextState.set(key, reducers[key](state.get(key), action));
-      },
-      Immutable.Map({})
-    ));
+    return reducerKeys.reduce(
+      (next, key) => next.set(key, reducers[key](state.get(key), action)),
+      state
+    );
   };
 };
 
@@ -36,7 +35,7 @@ const combinedReducer = immutableCombineReducers({
 const app = (state = Immutable.Map({}), action) => {
   switch (action.type) {
     default:
-      return state.merge(combinedReducer(state, action));
+      return combinedReducer(state, action);
   }
 };
 
