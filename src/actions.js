@@ -14,7 +14,7 @@ export const TILE_SELECT = 'TILE_SELECT';
 export const initializeChallengeState = (challengeJson) => {
   const store = Object.assign({selectedTileId: 0}, challengeJson);
   const used = false;
-  store.tiles = challengeJson.tiles.split('').map((letter, id) => {
+  store.tiles = challengeJson.tileString.split('').map((letter, id) => {
     return {id, letter, used};
   });
   return Immutable.fromJS(store);

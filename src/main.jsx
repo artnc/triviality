@@ -30,6 +30,11 @@ ReactDOM.render(
 
 /* Add global event listeners */
 
+const dispatchTileAdd = (tileId) => {
+  store.dispatch(pushHistoryState());
+  store.dispatch(addTile(tileId));
+};
+
 document.addEventListener('keydown', (e) => {
   const keyCode = e.which || e.keyCode || 0;
   let eventHandled = true;
@@ -41,10 +46,7 @@ document.addEventListener('keydown', (e) => {
       const state = store.getState();
       const selectedTileId = state.get('selectedTileId');
       const tile = state.get('tiles').get(selectedTileId);
-      if (!tile.get('used')) {
-        store.dispatch(pushHistoryState());
-        store.dispatch(addTile(tile.get('id')));
-      }
+      !tile.get('used') && dispatchTileAdd(tile.get('id'));
       break;
     }
     case 37: // Left
@@ -69,8 +71,26 @@ document.addEventListener('keydown', (e) => {
       store.dispatch(selectTile(y * GRID_WIDTH + x));
       break;
     }
-    default:
-      eventHandled = false;
+    default: {
+      if (e.ctrlKey || e.altKey || e.metaKey || keyCode < 48 || keyCode > 90) {
+        eventHandled = false;
+        break;
+      }
+
+      // Alphanumeric
+      const char = String.fromCharCode(keyCode);
+      const state = store.getState();
+      if (!state.get('tileString').includes(char)) {
+        break;
+      }
+      state.get('tiles').toJS().some((tile) => {
+        if (!tile.used && tile.letter === char) {
+          dispatchTileAdd(tile.id);
+          return true;
+        }
+      });
+      break;
+    }
   }
   eventHandled && e.preventDefault();
 });
