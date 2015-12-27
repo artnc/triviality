@@ -4,6 +4,7 @@ import {
   HISTORY_STATE_PUSH,
   HYDRATE,
   TILE_ADD,
+  TILE_SELECT,
   hydrate
 
 } from './actions';
@@ -65,6 +66,8 @@ const rootReducer = (state = Immutable.Map({}), action) => {
     }
     case HYDRATE:
       return rootReducer(action.state, {});
+    case TILE_SELECT:
+      return state.set('selectedTileId', action.tileId);
     default:
       return combinedReducer(state, action);
   }

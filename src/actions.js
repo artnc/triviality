@@ -6,6 +6,7 @@ export const HISTORY_STATE_POP = 'HISTORY_STATE_POP';
 export const HISTORY_STATE_PUSH = 'HISTORY_STATE_PUSH';
 export const HYDRATE = 'HYDRATE';
 export const TILE_ADD = 'TILE_ADD';
+export const TILE_SELECT = 'TILE_SELECT';
 
 // Action utils
 
@@ -32,5 +33,10 @@ export const hydrate = (hydrateState) => ({
 
 export const addTile = (tileId) => ({
   type: TILE_ADD,
+  tileId
+});
+
+export const selectTile = (tileId) => ({
+  type: TILE_SELECT,
   tileId
 });
