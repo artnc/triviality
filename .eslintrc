@@ -29,7 +29,6 @@
     // Best practices
     "block-scoped-var": 1,
     "curly": 2,
-    "default-case": 1,
     "dot-notation": 2,
     "eqeqeq": 2,
     "guard-for-in": 1,
