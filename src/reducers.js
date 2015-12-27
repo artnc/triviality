@@ -53,7 +53,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
   switch (action.type) {
     case HISTORY_STATE_POP: {
       const history = state.get(HISTORY_KEY);
-      if (!history.size) {
+      if (!(history && history.size)) {
         return state;
       }
       const previousState = history.last();
