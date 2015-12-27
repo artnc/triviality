@@ -1,11 +1,15 @@
 import {applyMiddleware, createStore} from 'redux';
 import createLogger from 'redux-logger';
-import {TILE_SELECT} from './actions';
+import {HISTORY_STATE_POP, HISTORY_STATE_PUSH, TILE_SELECT} from './actions';
 
 const middleWare = [];
 
 if (DEV) {
-  const HIDDEN_ACTIONS = [TILE_SELECT];
+  const HIDDEN_ACTIONS = [
+    HISTORY_STATE_POP,
+    HISTORY_STATE_PUSH,
+    TILE_SELECT
+  ];
   console.log(
     `%caction logging disabled for: ${HIDDEN_ACTIONS.join(', ')}`,
     'font-weight:700'
