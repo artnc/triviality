@@ -7,10 +7,10 @@ export const TILE_ADD = 'TILE_ADD';
 // Action utils
 
 // Converts the server's challenge format into a complete Redux state
-export const convertApiChallengeToState = (challenge) => {
-  const store = Object.assign({}, challenge);
+export const initializeChallengeState = (challengeJson) => {
+  const store = Object.assign({selectedTileId: 0}, challengeJson);
   const used = false;
-  store.tiles = challenge.tiles.split('').map((letter, id) => {
+  store.tiles = challengeJson.tiles.split('').map((letter, id) => {
     return {id, letter, used};
   });
   return Immutable.fromJS(store);
