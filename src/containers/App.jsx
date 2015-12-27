@@ -10,6 +10,7 @@ const App = React.createClass({
     const {
       dispatch,
       prompt,
+      selectedTileId,
       tiles
     } = this.props;
 
@@ -25,6 +26,7 @@ const App = React.createClass({
               dispatch(popHistoryState());
             }
           }}
+          selectedTileId={selectedTileId}
           tiles={tiles}
         />
       </div>
@@ -32,5 +34,9 @@ const App = React.createClass({
   }
 });
 
-const mapStateToProps = (state) => state.toObject();
+const mapStateToProps = (state) => ({
+  prompt: state.get('prompt'),
+  selectedTileId: state.get('selectedTileId'),
+  tiles: state.get('tiles')
+});
 export default connect(mapStateToProps)(App);

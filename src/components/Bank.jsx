@@ -8,6 +8,7 @@ export const Bank = createPureComponent({
   render() {
     const {
       onTileClick,
+      selectedTileId,
       tiles
     } = this.props;
 
@@ -18,6 +19,7 @@ export const Bank = createPureComponent({
         <td key={tile.get('id')}>
           <Tile
             onTileClick={onTileClick}
+            selectedTileId={selectedTileId}
             tile={tile}
           />
         </td>
