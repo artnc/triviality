@@ -21,7 +21,7 @@ export const Tile = createPureComponent({
           {[styles.used]: tileUsed}
         )}
         onClick={() => {
-          onTileClick(tileId, tileUsed);
+          onTileClick(tile.toJS());
         }}
       >{tile.get('letter')}</div>
     );

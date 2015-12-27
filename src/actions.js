@@ -12,7 +12,10 @@ export const TILE_SELECT = 'TILE_SELECT';
 
 // Converts the server's challenge format into a complete Redux state
 export const initializeChallengeState = (challengeJson) => {
-  const store = Object.assign({selectedTileId: 0}, challengeJson);
+  const store = Object.assign({
+    guess: '',
+    selectedTileId: 0
+  }, challengeJson);
   const used = false;
   store.tiles = challengeJson.tileString.split('').map((letter, id) => {
     return {id, letter, used};
@@ -31,7 +34,8 @@ export const hydrate = (hydrateState) => ({
   type: HYDRATE
 });
 
-export const addTile = (tileId) => ({
+export const addTile = (tileId, letter) => ({
+  letter,
   type: TILE_ADD,
   tileId
 });

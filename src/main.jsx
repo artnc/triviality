@@ -30,9 +30,9 @@ ReactDOM.render(
 
 /* Add global event listeners */
 
-const dispatchTileAdd = (tileId) => {
+const dispatchTileAdd = (tileId, letter) => {
   store.dispatch(pushHistoryState());
-  store.dispatch(addTile(tileId));
+  store.dispatch(addTile(tileId, letter));
 };
 
 document.addEventListener('keydown', (e) => {
@@ -46,7 +46,7 @@ document.addEventListener('keydown', (e) => {
       const state = store.getState();
       const selectedTileId = state.get('selectedTileId');
       const tile = state.get('tiles').get(selectedTileId);
-      !tile.get('used') && dispatchTileAdd(tile.get('id'));
+      !tile.get('used') && dispatchTileAdd(tile.get('id'), tile.get('letter'));
       break;
     }
     case 37: // Left
@@ -85,7 +85,7 @@ document.addEventListener('keydown', (e) => {
       }
       state.get('tiles').toJS().some((tile) => {
         if (!tile.used && tile.letter === char) {
-          dispatchTileAdd(tile.id);
+          dispatchTileAdd(tile.id, tile.letter);
           return true;
         }
       });
