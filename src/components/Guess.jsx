@@ -12,15 +12,17 @@ export const Guess = createPureComponent({
   render() {
     const {guess, solution} = this.props;
     const delimitedSolution = solution.trim().replace(
-      /\s+/g,
-      `${RUN_DELIMITER}${WHITESPACE}${RUN_DELIMITER}`
+      /(\w+)/g,
+      `${RUN_DELIMITER}$1${RUN_DELIMITER}`
     );
 
     let slotGroupPosition = 0;
     return (
       <div className={styles.guess}>
         {delimitedSolution.split(RUN_DELIMITER).map((run) => {
-          if (!(run.length && run.charAt(0).match(/\w/))) {
+          if (run === ' ') {
+            return WHITESPACE;
+          } else if (!(run.length && run.charAt(0).match(/\w/))) {
             return run;
           }
 
