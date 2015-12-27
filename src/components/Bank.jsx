@@ -20,7 +20,7 @@ export const Bank = createPureComponent({
           <Tile
             onTileClick={onTileClick}
             selectedTileId={selectedTileId}
-            tile={tile}
+            tile={tile.toJS()}
           />
         </td>
       );
