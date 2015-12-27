@@ -7,7 +7,7 @@ import {initializeChallengeState, selectTile} from './actions';
 import {GRID_HEIGHT, GRID_WIDTH} from './constants';
 import App from './containers/App';
 import rootReducer from './reducers';
-import styles from './styles/global.scss';
+import './styles/global.scss';
 
 /* Initialize Redux */
 
