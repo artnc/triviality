@@ -8,10 +8,8 @@ import styles from '../containers/App.scss';
 const App = React.createClass({
   render() {
     const {
-      cols,
       dispatch,
       prompt,
-      rows,
       tiles
     } = this.props;
 
@@ -19,11 +17,9 @@ const App = React.createClass({
       <div className={styles.app}>
         <Prompt>{prompt}</Prompt>
         <Bank
-          cols={cols}
           onTileClick={(tileId) => {
             dispatch(addTile(tileId));
           }}
-          rows={rows}
           tiles={tiles}
         />
       </div>
