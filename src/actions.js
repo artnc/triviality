@@ -2,6 +2,9 @@ import Immutable from 'immutable';
 
 // Action types
 
+export const HISTORY_STATE_POP = 'HISTORY_STATE_POP';
+export const HISTORY_STATE_PUSH = 'HISTORY_STATE_PUSH';
+export const HYDRATE = 'HYDRATE';
 export const TILE_ADD = 'TILE_ADD';
 
 // Action utils
@@ -18,9 +21,16 @@ export const initializeChallengeState = (challengeJson) => {
 
 // Action creators
 
-export const addTile = (tileId) => {
-  return {
-    type: TILE_ADD,
-    tileId
-  };
-};
+export const popHistoryState = () => ({type: HISTORY_STATE_POP});
+
+export const pushHistoryState = () => ({type: HISTORY_STATE_PUSH});
+
+export const hydrate = (hydrateState) => ({
+  state: hydrateState,
+  type: HYDRATE
+});
+
+export const addTile = (tileId) => ({
+  type: TILE_ADD,
+  tileId
+});
