@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import {createPureComponent} from '../util/react';
 import styles from './Tile.scss';
@@ -11,7 +12,10 @@ export const Tile = createPureComponent({
 
     return (
       <div
-        className={styles.tile}
+        className={classNames(
+          styles.tile,
+          {[styles.used]: tile.get('used')}
+        )}
         onClick={() => {
           onTileClick(tile.get('id'));
         }}
