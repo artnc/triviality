@@ -1,7 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import {initializeChallengeState, popHistoryState, selectTile} from './actions';
+import {
+  addTile,
+  initializeChallengeState,
+  popHistoryState,
+  pushHistoryState,
+  selectTile
+} from './actions';
 import {GRID_HEIGHT, GRID_WIDTH} from './constants';
 import App from './containers/App';
 import rootReducer from './reducers';
@@ -31,6 +37,16 @@ document.addEventListener('keydown', (e) => {
     case 8: // Backspace
       store.dispatch(popHistoryState());
       break;
+    case 13: { // Enter
+      const state = store.getState();
+      const selectedTileId = state.get('selectedTileId');
+      const tile = state.get('tiles').get(selectedTileId);
+      if (!tile.get('used')) {
+        store.dispatch(pushHistoryState());
+        store.dispatch(addTile(tile.get('id')));
+      }
+      break;
+    }
     case 37: // Left
     case 38: // Up
     case 39: // Right
