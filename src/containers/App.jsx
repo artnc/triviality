@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addTile, popHistoryState, pushHistoryState} from '../actions';
+import {addTile, pushHistoryState} from '../actions';
 import {Bank} from '../components/Bank';
 import {Prompt} from '../components/Prompt';
 import styles from '../containers/App.scss';
@@ -18,12 +18,10 @@ const App = React.createClass({
       <div className={styles.app}>
         <Prompt>{prompt}</Prompt>
         <Bank
-          onTileClick={(tileId) => {
-            if ((Math.floor(Date.now() / 1000) % 2)) { // second is odd
+          onTileClick={(tileId, tileUsed) => {
+            if (!tileUsed) {
               dispatch(pushHistoryState());
               dispatch(addTile(tileId));
-            } else {
-              dispatch(popHistoryState());
             }
           }}
           selectedTileId={selectedTileId}

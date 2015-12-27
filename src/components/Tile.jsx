@@ -12,15 +12,16 @@ export const Tile = createPureComponent({
     } = this.props;
 
     const tileId = tile.get('id');
+    const tileUsed = tile.get('used');
     return (
       <div
         className={classNames(
           styles.tile,
           {[styles.selected]: tileId === selectedTileId},
-          {[styles.used]: tile.get('used')}
+          {[styles.used]: tileUsed}
         )}
         onClick={() => {
-          onTileClick(tileId);
+          onTileClick(tileId, tileUsed);
         }}
       >{tile.get('letter')}</div>
     );
