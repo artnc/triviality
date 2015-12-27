@@ -44,9 +44,13 @@ document.addEventListener('keydown', (e) => {
       break;
     case 13: { // Enter
       const state = store.getState();
+      const filteredSolution = state.get('filteredSolution');
+      const guess = state.get('guess');
       const selectedTileId = state.get('selectedTileId');
       const tile = state.get('tiles').get(selectedTileId);
-      !tile.get('used') && dispatchTileAdd(tile.get('id'), tile.get('letter'));
+      if (!tile.get('used') && guess.length < filteredSolution.length) {
+        dispatchTileAdd(tile.get('id'), tile.get('letter'));
+      }
       break;
     }
     case 37: // Left
@@ -80,7 +84,10 @@ document.addEventListener('keydown', (e) => {
       // Alphanumeric
       const char = String.fromCharCode(keyCode);
       const state = store.getState();
-      if (!state.get('tileString').includes(char)) {
+      const filteredSolution = state.get('filteredSolution');
+      const guess = state.get('guess');
+      if (!state.get('tileString').includes(char) ||
+        guess.length >= filteredSolution.length) {
         break;
       }
       state.get('tiles').toJS().some((tile) => {

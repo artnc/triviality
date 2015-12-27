@@ -10,6 +10,7 @@ const App = React.createClass({
   render() {
     const {
       dispatch,
+      filteredSolution,
       guess,
       prompt,
       selectedTileId,
@@ -26,7 +27,7 @@ const App = React.createClass({
         />
         <Bank
           onTileClick={(tile) => {
-            if (!tile.used) {
+            if (!tile.used && guess.length < filteredSolution.length) {
               dispatch(pushHistoryState());
               dispatch(addTile(tile.id, tile.letter));
             }
@@ -40,6 +41,7 @@ const App = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
+  filteredSolution: state.get('filteredSolution'),
   guess: state.get('guess'),
   prompt: state.get('prompt'),
   selectedTileId: state.get('selectedTileId'),

@@ -13,6 +13,7 @@ export const TILE_SELECT = 'TILE_SELECT';
 // Converts the server's challenge format into a complete Redux state
 export const initializeChallengeState = (challengeJson) => {
   const store = Object.assign({
+    filteredSolution: challengeJson.solution.replace(/[^\w]/g, ''),
     guess: '',
     selectedTileId: 0
   }, challengeJson);
