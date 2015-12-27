@@ -54,22 +54,26 @@ const rootReducer = (state = Immutable.Map({}), action) => {
     case HISTORY_STATE_POP: {
       const history = state.get(HISTORY_KEY);
       if (!(history && history.size)) {
-        return state;
+        break;
       }
       const previousState = history.last();
       const hydrateState = previousState.set(HISTORY_KEY, history.pop());
-      return rootReducer(null, hydrate(hydrateState));
+      state = rootReducer(null, hydrate(hydrateState));
+      break;
     }
     case HISTORY_STATE_PUSH: {
       const history = state.get(HISTORY_KEY, Immutable.List([]));
-      return state.set(HISTORY_KEY, history.push(state.delete(HISTORY_KEY)));
+      state = state.set(HISTORY_KEY, history.push(state.delete(HISTORY_KEY)));
+      break;
     }
     case HYDRATE:
-      return rootReducer(action.state, {});
+      state = rootReducer(action.state, {});
+      break;
+    case TILE_ADD:
     case TILE_SELECT:
-      return state.set('selectedTileId', action.tileId);
-    default:
-      return combinedReducer(state, action);
+      state = state.set('selectedTileId', action.tileId);
+      break;
   }
+  return combinedReducer(state, action);
 };
 export default rootReducer;
