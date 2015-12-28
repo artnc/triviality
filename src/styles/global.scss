@@ -1,13 +1,12 @@
 @import 'normalize.css';
 @import 'variables';
 
-@import url(https://fonts.googleapis.com/css?family=Alegreya:700);
-@import url(https://fonts.googleapis.com/css?family=Inconsolata:700);
+@import url(https://fonts.googleapis.com/css?family=Alegreya:400);
+@import url(https://fonts.googleapis.com/css?family=Inconsolata:400);
 
 :global {
   html {
     font-family: 'Alegreya', serif;
-    font-weight: 700;
     height: 100%;
   }
 
