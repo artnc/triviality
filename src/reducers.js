@@ -85,7 +85,9 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       }
       break;
     case TILE_SELECT:
-      state = state.set('selectedTileId', action.tileId);
+      if (!state.get('solved')) {
+        state = state.set('selectedTileId', action.tileId);
+      }
       break;
   }
   return combinedReducer(state, action);

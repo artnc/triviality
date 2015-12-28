@@ -1,4 +1,16 @@
+@import '../styles/variables';
+
 .slot {
   display: inline-block;
-  font-family: 'Inconsolata', monospace;
+  margin: 0 5px;
+
+  &:after {
+    background: $text-color;
+    content: '';
+    display: block;
+    height: 4px;
+    margin-left: 5%;
+    opacity: 0.25;
+    width: 90%;
+  }
 }

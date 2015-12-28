@@ -1,12 +1,20 @@
+@import '../styles/variables';
+
+$tile-size: 84px;
+
 .tile {
+  border: 5px solid transparent;
+  border-radius: 999px;
   display: inline-block;
   font-family: 'Inconsolata', monospace;
+  height: $tile-size;
+  width: $tile-size;
 }
 
 .selected {
-  background: rgba(0, 0, 0, 0.1);
+  border-color: $text-color;
 }
 
-.used {
+.used span {
   opacity: 0.2;
 }
