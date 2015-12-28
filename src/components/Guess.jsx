@@ -6,7 +6,7 @@ import {Tile} from '../components/Tile';
 // Arbitrary constant unlikely to ever appear naturally
 const RUN_DELIMITER = '@#"';
 
-const WHITESPACE = '\u00a0\u00a0';
+const NBSP = '\u00a0';
 
 export const Guess = createPureComponent({
   render() {
@@ -21,7 +21,7 @@ export const Guess = createPureComponent({
       <div className={styles.guess}>
         {delimitedSolution.split(RUN_DELIMITER).map((run) => {
           if (run === ' ') {
-            return WHITESPACE;
+            return NBSP;
           } else if (!(run.length && run.charAt(0).match(/\w/))) {
             return run;
           }
