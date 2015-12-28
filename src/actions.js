@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 
-// Action types
+/* Action types */
 
 export const HISTORY_STATE_POP = 'HISTORY_STATE_POP';
 export const HISTORY_STATE_PUSH = 'HISTORY_STATE_PUSH';
@@ -8,23 +8,34 @@ export const HYDRATE = 'HYDRATE';
 export const TILE_ADD = 'TILE_ADD';
 export const TILE_SELECT = 'TILE_SELECT';
 
-// Action utils
+/* Action utils */
+
+// Arbitrary constant unlikely to ever appear naturally
+const RUN_DELIMITER = '@#"';
 
 // Converts the server's challenge format into a complete Redux state
 export const initializeChallengeState = (challengeJson) => {
-  const store = Object.assign({
+  const solutionChars = challengeJson.tileString.split('');
+  const solutionRuns = challengeJson.solution.trim().replace(
+    /(\w+)/g,
+    `${RUN_DELIMITER}$1${RUN_DELIMITER}`
+  ).split(RUN_DELIMITER).filter((run) => run.length).map((run) => (
+    run.charAt(0).match(/\w/) ? run.length : run
+  ));
+
+  return Immutable.fromJS({
     filteredSolution: challengeJson.solution.replace(/[^\w]/g, ''),
     guess: '',
-    selectedTileId: 0
-  }, challengeJson);
-  const used = false;
-  store.tiles = challengeJson.tileString.split('').map((letter, id) => {
-    return {id, letter, used};
+    prompt: challengeJson.prompt,
+    selectedTileId: 0,
+    solutionRuns,
+    solved: false,
+    tiles: solutionChars.map((letter, id) => ({id, letter, used: false})),
+    tileString: challengeJson.tileString
   });
-  return Immutable.fromJS(store);
 };
 
-// Action creators
+/* Action creators */
 
 export const popHistoryState = () => ({type: HISTORY_STATE_POP});
 

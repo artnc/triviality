@@ -14,7 +14,7 @@ const App = React.createClass({
       guess,
       prompt,
       selectedTileId,
-      solution,
+      solutionRuns,
       tiles
     } = this.props;
 
@@ -23,7 +23,7 @@ const App = React.createClass({
         <Prompt>{prompt}</Prompt>
         <Guess
           guess={guess}
-          solution={solution}
+          solutionRuns={solutionRuns}
         />
         <Bank
           onTileClick={(tile) => {
@@ -45,7 +45,7 @@ const mapStateToProps = (state) => ({
   guess: state.get('guess'),
   prompt: state.get('prompt'),
   selectedTileId: state.get('selectedTileId'),
-  solution: state.get('solution'),
+  solutionRuns: state.get('solutionRuns'),
   tiles: state.get('tiles')
 });
 export default connect(mapStateToProps)(App);

@@ -52,6 +52,10 @@ const HISTORY_KEY = '_stateHistory';
 const rootReducer = (state = Immutable.Map({}), action) => {
   switch (action.type) {
     case HISTORY_STATE_POP: {
+      if (state.get('solved')) {
+        break;
+      }
+
       const history = state.get(HISTORY_KEY);
       if (!(history && history.size)) {
         break;
@@ -70,10 +74,15 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       state = rootReducer(action.state, {});
       break;
     case TILE_ADD:
+      const guess = `${state.get('guess')}${action.letter}`;
       state = state.merge({
-        guess: `${state.get('guess')}${action.letter}`,
+        guess,
         selectedTileId: action.tileId
       });
+      if (guess === state.get('filteredSolution')) {
+        state = state.set('solved', true);
+        console.log('Solved!');
+      }
       break;
     case TILE_SELECT:
       state = state.set('selectedTileId', action.tileId);
