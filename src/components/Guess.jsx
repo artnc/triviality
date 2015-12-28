@@ -1,7 +1,7 @@
 import React from 'react';
 import {createPureComponent} from '../util/react';
 import styles from '../components/Guess.scss';
-import {Tile} from '../components/Tile';
+import {Slot} from '../components/Slot';
 
 // Arbitrary constant unlikely to ever appear naturally
 const RUN_DELIMITER = '@#"';
@@ -29,10 +29,7 @@ export const Guess = createPureComponent({
           const slotGroup = [];
           for (let i = 0; i < run.length; ++i) {
             slotGroup.push(
-              <Tile tile={({
-                id: -1,
-                letter: guess[slotGroupPosition + i] || '\u00a0'
-              })} />
+              <Slot>{guess[slotGroupPosition + i] || '\u00a0'}</Slot>
             );
           }
 
