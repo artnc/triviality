@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addTile, pushHistoryState} from '../actions';
+import {addTile} from '../actions';
 import {Bank} from '../components/Bank';
 import {Guess} from '../components/Guess';
 import {Prompt} from '../components/Prompt';
@@ -30,7 +30,6 @@ const App = React.createClass({
         <Bank
           onTileClick={(tile) => {
             if (!tile.used && guess.length < filteredSolution.length) {
-              dispatch(pushHistoryState());
               dispatch(addTile(tile.id, tile.char));
             }
           }}

@@ -1,13 +1,11 @@
 import {applyMiddleware, createStore} from 'redux';
 import createLogger from 'redux-logger';
-import {HISTORY_STATE_POP, HISTORY_STATE_PUSH, TILE_SELECT} from './actions';
+import {TILE_SELECT} from './actions';
 
 const middleWare = [];
 
 if (DEV) {
   const HIDDEN_ACTIONS = [
-    HISTORY_STATE_POP,
-    HISTORY_STATE_PUSH,
     TILE_SELECT
   ];
   console.log(

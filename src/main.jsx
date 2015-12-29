@@ -4,8 +4,7 @@ import {Provider} from 'react-redux';
 import {
   addTile,
   initializeChallengeState,
-  popHistoryState,
-  pushHistoryState,
+  removeTile,
   selectTile
 } from './actions';
 import {GRID_HEIGHT, GRID_WIDTH} from './constants';
@@ -30,18 +29,15 @@ ReactDOM.render(
 
 /* Add global event listeners */
 
-const dispatchTileAdd = (tileId, char) => {
-  store.dispatch(pushHistoryState());
-  store.dispatch(addTile(tileId, char));
-};
-
 document.addEventListener('keydown', (e) => {
   const keyCode = e.which || e.keyCode || 0;
   let eventHandled = true;
   switch (keyCode) {
-    case 8: // Backspace
-      store.dispatch(popHistoryState());
+    case 8: { // Backspace
+      const guessTileIds = store.getState().get('guessTileIds');
+      guessTileIds.size && store.dispatch(removeTile(guessTileIds.last()));
       break;
+    }
     case 13: { // Enter
       const state = store.getState();
       const filteredSolution = state.get('filteredSolution');
@@ -49,7 +45,7 @@ document.addEventListener('keydown', (e) => {
       const selectedTileId = state.get('selectedTileId');
       const tile = state.get('tiles').get(selectedTileId);
       if (!tile.get('used') && guess.length < filteredSolution.length) {
-        dispatchTileAdd(selectedTileId, tile.get('char'));
+        store.dispatch(addTile(selectedTileId, tile.get('char')));
       }
       break;
     }
@@ -92,7 +88,7 @@ document.addEventListener('keydown', (e) => {
       }
       state.get('tiles').toJS().some((tile, id) => {
         if (!tile.used && tile.char === char) {
-          dispatchTileAdd(id, tile.char);
+          store.dispatch(addTile(id, tile.char));
           return true;
         }
       });

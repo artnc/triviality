@@ -4,6 +4,7 @@ import {
   HISTORY_STATE_PUSH,
   HYDRATE,
   TILE_ADD,
+  TILE_REMOVE,
   TILE_SELECT,
   hydrate
 
@@ -14,7 +15,9 @@ import {
 const tile = (state, action) => {
   switch (action.type) {
     case TILE_ADD:
-      return state.set('used', !state.get('used'));
+      return state.set('used', true);
+    case TILE_REMOVE:
+      return state.set('used', false);
     default:
       return state;
   }
@@ -52,10 +55,6 @@ const HISTORY_KEY = '_stateHistory';
 const rootReducer = (state = Immutable.Map({}), action) => {
   switch (action.type) {
     case HISTORY_STATE_POP: {
-      if (state.get('solved')) {
-        break;
-      }
-
       const history = state.get(HISTORY_KEY);
       if (!(history && history.size)) {
         break;
@@ -70,13 +69,15 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       state = state.set(HISTORY_KEY, history.push(state.delete(HISTORY_KEY)));
       break;
     }
-    case HYDRATE:
+    case HYDRATE: {
       state = rootReducer(action.state, {});
       break;
-    case TILE_ADD:
+    }
+    case TILE_ADD: {
       const guess = `${state.get('guess')}${action.char}`;
       state = state.merge({
         guess,
+        guessTileIds: state.get('guessTileIds').push(action.tileId),
         selectedTileId: action.tileId
       });
       if (guess === state.get('filteredSolution')) {
@@ -84,11 +85,24 @@ const rootReducer = (state = Immutable.Map({}), action) => {
         console.log('Solved!');
       }
       break;
-    case TILE_SELECT:
+    }
+    case TILE_REMOVE: {
+      const guessTileIds = state.get('guessTileIds');
+      if (state.get('solved') || !guessTileIds.size) {
+        break;
+      }
+      state = state.merge({
+        guess: state.get('guess').slice(0, -1),
+        guessTileIds: guessTileIds.pop()
+      });
+      break;
+    }
+    case TILE_SELECT: {
       if (!state.get('solved')) {
         state = state.set('selectedTileId', action.tileId);
       }
       break;
+    }
   }
   return combinedReducer(state, action);
 };

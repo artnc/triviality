@@ -6,6 +6,7 @@ export const HISTORY_STATE_POP = 'HISTORY_STATE_POP';
 export const HISTORY_STATE_PUSH = 'HISTORY_STATE_PUSH';
 export const HYDRATE = 'HYDRATE';
 export const TILE_ADD = 'TILE_ADD';
+export const TILE_REMOVE = 'TILE_REMOVE';
 export const TILE_SELECT = 'TILE_SELECT';
 
 /* Action utils */
@@ -26,6 +27,7 @@ export const initializeChallengeState = (challengeJson) => {
   return Immutable.fromJS({
     filteredSolution: challengeJson.solution.replace(/[^\w]/g, ''),
     guess: '',
+    guessTileIds: [],
     prompt: challengeJson.prompt,
     selectedTileId: 0,
     solutionRuns,
@@ -50,6 +52,11 @@ export const addTile = (tileId, char) => ({
   char,
   tileId,
   type: TILE_ADD
+});
+
+export const removeTile = (tileId) => ({
+  tileId,
+  type: TILE_REMOVE
 });
 
 export const selectTile = (tileId) => ({
