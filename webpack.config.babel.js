@@ -54,7 +54,7 @@ export default {
   output: {
     path: `${__dirname}/dist`,
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: 'trivia.js'
   },
   resolve: {
     extensions: ['', '.jsx', '.js', '.scss']
@@ -65,7 +65,7 @@ export default {
       DEV: !PROD,
       PROD
     }),
-    new ExtractTextPlugin('styles.css')
+    new ExtractTextPlugin('trivia.css')
   ],
   postcss: [
     cssnano({
