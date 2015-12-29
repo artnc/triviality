@@ -1,6 +1,7 @@
 @import '../styles/variables';
 
 .guess {
+  display: inline-block;
   font-family: 'Inconsolata', monospace;
   margin: 12vmin 0;
 }
