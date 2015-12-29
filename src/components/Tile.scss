@@ -1,10 +1,11 @@
 @import '../styles/variables';
 
-$tile-size: 84px;
+$tile-size: 6.7vmin;
 
 .tile {
-  border: 5px solid transparent;
+  border: 0.4vmin solid transparent;
   border-radius: 999px;
+  cursor: pointer;
   display: inline-block;
   font-family: 'Inconsolata', monospace;
   height: $tile-size;

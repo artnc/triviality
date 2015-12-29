@@ -1,4 +1,10 @@
+@import '../styles/variables';
+
 .guess {
   font-family: 'Inconsolata', monospace;
-  margin: 100px 0;
+  margin: 12vmin 0;
+}
+
+.solved {
+  color: $solved-color;
 }

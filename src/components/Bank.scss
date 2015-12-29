@@ -1,5 +1,12 @@
-@import '../styles/variables';
-
 .table {
-  width: 100%;
+  margin: 0 auto;
+
+  td {
+    width: 9vmin;
+  }
+}
+
+.solved div {
+  border-color: transparent !important;
+  cursor: default !important;
 }

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import styles from '../components/Guess.scss';
 import {Slot} from '../components/Slot';
@@ -5,11 +6,14 @@ import {createPureComponent} from '../util/react';
 
 export const Guess = createPureComponent({
   render() {
-    const {guess, solutionRuns} = this.props;
+    const {guess, solutionRuns, solved} = this.props;
 
     let slotGroupPosition = 0;
     return (
-      <div className={styles.guess}>
+      <div className={classNames(
+        styles.guess,
+        {[styles.solved]: solved}
+      )}>
         {solutionRuns.map((run) => {
           if (typeof run === 'string') {
             return run;

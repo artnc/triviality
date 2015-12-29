@@ -2,15 +2,20 @@
 
 .slot {
   display: inline-block;
-  margin: 0 5px;
+  margin: 0 0.3vmin;
+  transition: color 0.5s;
 
   &:after {
     background: $text-color;
     content: '';
     display: block;
-    height: 4px;
+    height: 0.3vmin;
     margin-left: 5%;
     opacity: 0.25;
     width: 90%;
   }
+}
+
+.solved {
+  color: $solved-color;
 }

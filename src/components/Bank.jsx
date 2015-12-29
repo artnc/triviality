@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import {GRID_HEIGHT, GRID_WIDTH} from '../constants';
 import {createPureComponent} from '../util/react';
@@ -9,6 +10,7 @@ export const Bank = createPureComponent({
     const {
       onTileClick,
       selectedTileId,
+      solved,
       tiles
     } = this.props;
 
@@ -27,7 +29,10 @@ export const Bank = createPureComponent({
     });
 
     return (
-      <table className={styles.table}>
+      <table className={classNames(
+        styles.table,
+        {[styles.solved]: solved}
+      )}>
         <tbody>
           {grid.map((row, i) => <tr key={i}>{row}</tr>)}
         </tbody>
