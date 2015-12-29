@@ -31,7 +31,7 @@ const App = React.createClass({
           onTileClick={(tile) => {
             if (!tile.used && guess.length < filteredSolution.length) {
               dispatch(pushHistoryState());
-              dispatch(addTile(tile.id, tile.letter));
+              dispatch(addTile(tile.id, tile.char));
             }
           }}
           selectedTileId={selectedTileId}

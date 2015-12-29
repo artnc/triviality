@@ -30,9 +30,9 @@ ReactDOM.render(
 
 /* Add global event listeners */
 
-const dispatchTileAdd = (tileId, letter) => {
+const dispatchTileAdd = (tileId, char) => {
   store.dispatch(pushHistoryState());
-  store.dispatch(addTile(tileId, letter));
+  store.dispatch(addTile(tileId, char));
 };
 
 document.addEventListener('keydown', (e) => {
@@ -49,7 +49,7 @@ document.addEventListener('keydown', (e) => {
       const selectedTileId = state.get('selectedTileId');
       const tile = state.get('tiles').get(selectedTileId);
       if (!tile.get('used') && guess.length < filteredSolution.length) {
-        dispatchTileAdd(tile.get('id'), tile.get('letter'));
+        dispatchTileAdd(selectedTileId, tile.get('char'));
       }
       break;
     }
@@ -90,9 +90,9 @@ document.addEventListener('keydown', (e) => {
         guess.length >= filteredSolution.length) {
         break;
       }
-      state.get('tiles').toJS().some((tile) => {
-        if (!tile.used && tile.letter === char) {
-          dispatchTileAdd(tile.id, tile.letter);
+      state.get('tiles').toJS().some((tile, id) => {
+        if (!tile.used && tile.char === char) {
+          dispatchTileAdd(id, tile.char);
           return true;
         }
       });

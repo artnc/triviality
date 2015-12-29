@@ -30,7 +30,7 @@ export const initializeChallengeState = (challengeJson) => {
     selectedTileId: 0,
     solutionRuns,
     solved: false,
-    tiles: solutionChars.map((letter, id) => ({id, letter, used: false})),
+    tiles: solutionChars.map((char, id) => ({char, id, used: false})),
     tileString: challengeJson.tileString
   });
 };
@@ -46,13 +46,13 @@ export const hydrate = (hydrateState) => ({
   type: HYDRATE
 });
 
-export const addTile = (tileId, letter) => ({
-  letter,
-  type: TILE_ADD,
-  tileId
+export const addTile = (tileId, char) => ({
+  char,
+  tileId,
+  type: TILE_ADD
 });
 
 export const selectTile = (tileId) => ({
-  type: TILE_SELECT,
-  tileId
+  tileId,
+  type: TILE_SELECT
 });

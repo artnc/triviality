@@ -24,7 +24,7 @@ export const Tile = createPureComponent({
           onTileClick(tile);
         }}
       >
-        <span>{tile.letter}</span>
+        <span>{tile.char}</span>
       </div>
     );
   }

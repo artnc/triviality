@@ -74,7 +74,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       state = rootReducer(action.state, {});
       break;
     case TILE_ADD:
-      const guess = `${state.get('guess')}${action.letter}`;
+      const guess = `${state.get('guess')}${action.char}`;
       state = state.merge({
         guess,
         selectedTileId: action.tileId

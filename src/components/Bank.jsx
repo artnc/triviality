@@ -18,7 +18,7 @@ export const Bank = createPureComponent({
     const grid = Array(GRID_HEIGHT).fill().map(() => Array(GRID_WIDTH));
     tiles.forEach((tile, i) => {
       grid[Math.floor(i / GRID_WIDTH)][i % GRID_WIDTH] = (
-        <td key={tile.get('id')}>
+        <td key={i}>
           <Tile
             onTileClick={onTileClick}
             selectedTileId={selectedTileId}
