@@ -97,3 +97,18 @@ document.addEventListener('keydown', (e) => {
   }
   eventHandled && e.preventDefault();
 });
+
+// From https://developer.amazon.com/public/solutions/platforms/webapps/faq
+window.tvMode && window.addEventListener('load', () => {
+  console.log('Amazon Fire TV mode enabled.');
+  const BACK_FLAG = 'backhandler';
+  window.addEventListener('popstate', () => {
+    if (window.history.state === BACK_FLAG) {
+      return;
+    }
+    const guessTileIds = store.getState().get('guessTileIds');
+    guessTileIds.size && store.dispatch(removeTile(guessTileIds.last()));
+    window.history.pushState(BACK_FLAG, null, null);
+  });
+  window.history.pushState(BACK_FLAG, null, null);
+});

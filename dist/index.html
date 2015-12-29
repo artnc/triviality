@@ -7,11 +7,12 @@
 <body>
   <div id="root"></div>
   <script>
-    window.initialData = {
+    var initialData = {
       prompt: 'He was the first president of the United States.',
       solution: 'GEORGE WASHINGTON',
       tileString: 'NZIGEAORDUOGWHNKGSIEETCB'
     };
+    var tvMode = navigator.userAgent.indexOf('AmazonWebAppPlatform') !== -1;
   </script>
   <script src="bundle.js"></script>
 </body>
