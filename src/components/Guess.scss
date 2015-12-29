@@ -12,4 +12,8 @@
 
 .solved {
   color: $solved-color;
+
+  div:after {
+    background: $solved-color !important;
+  }
 }

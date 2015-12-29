@@ -12,10 +12,7 @@
     height: 0.3vmin;
     margin-left: 5%;
     opacity: 0.25;
+    transition: background 0.5s;
     width: 90%;
   }
-}
-
-.solved {
-  color: $solved-color;
 }
