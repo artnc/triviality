@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addTile} from '../actions';
+import {addTile, removeTile} from '../actions';
 import {Bank} from '../components/Bank';
 import {Guess} from '../components/Guess';
 import {Prompt} from '../components/Prompt';
@@ -12,6 +12,7 @@ const App = React.createClass({
       dispatch,
       filteredSolution,
       guess,
+      guessTileIds,
       prompt,
       selectedTileId,
       solutionRuns,
@@ -24,6 +25,9 @@ const App = React.createClass({
         <Prompt>{prompt}</Prompt>
         <Guess
           guess={guess}
+          onPromptClick={() => {
+            guessTileIds.size && dispatch(removeTile(guessTileIds.last()));
+          }}
           solutionRuns={solutionRuns}
           solved={solved}
         />
@@ -45,6 +49,7 @@ const App = React.createClass({
 const mapStateToProps = (state) => ({
   filteredSolution: state.get('filteredSolution'),
   guess: state.get('guess'),
+  guessTileIds: state.get('guessTileIds'),
   prompt: state.get('prompt'),
   selectedTileId: state.get('selectedTileId'),
   solutionRuns: state.get('solutionRuns'),

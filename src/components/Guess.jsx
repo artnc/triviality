@@ -6,14 +6,20 @@ import {createPureComponent} from '../util/react';
 
 export const Guess = createPureComponent({
   render() {
-    const {guess, solutionRuns, solved} = this.props;
+    const {guess, onPromptClick, solutionRuns, solved} = this.props;
 
     let slotGroupPosition = 0;
     return (
-      <div className={classNames(
-        styles.guess,
-        {[styles.solved]: solved}
-      )}>
+      <div
+        className={classNames(
+          styles.guess,
+          {
+            [styles.populated]: guess.length,
+            [styles.solved]: solved
+          }
+        )}
+        onClick={onPromptClick}
+      >
         {solutionRuns.map((run) => {
           if (typeof run === 'string') {
             return run;

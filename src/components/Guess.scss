@@ -5,6 +5,10 @@
   margin: 12vmin 0;
 }
 
+.populated {
+  cursor: pointer;
+}
+
 .solved {
   color: $solved-color;
 }
