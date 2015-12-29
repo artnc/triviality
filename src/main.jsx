@@ -15,7 +15,7 @@ import './styles/global.scss';
 
 /* Initialize Redux */
 
-const initialState = initializeChallengeState(window.initialData);
+const initialState = initializeChallengeState();
 const store = createStoreWithMiddleware(rootReducer, initialState);
 
 /* Initialize React */

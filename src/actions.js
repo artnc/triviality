@@ -15,7 +15,7 @@ export const TILE_SELECT = 'TILE_SELECT';
 const RUN_DELIMITER = '@#"';
 
 // Converts the server's challenge format into a complete Redux state
-export const initializeChallengeState = (challengeJson) => {
+const loadServerChallenge = (challengeJson) => {
   const solutionChars = challengeJson.tileString.split('');
   const solutionRuns = challengeJson.solution.trim().replace(
     /(\w+)/g,
@@ -28,6 +28,7 @@ export const initializeChallengeState = (challengeJson) => {
     filteredSolution: challengeJson.solution.replace(/[^\w]/g, ''),
     guess: '',
     guessTileIds: [],
+    id: challengeJson.id,
     prompt: challengeJson.prompt,
     selectedTileId: 0,
     solutionRuns,
@@ -35,6 +36,14 @@ export const initializeChallengeState = (challengeJson) => {
     tiles: solutionChars.map((char, id) => ({char, id, used: false})),
     tileString: challengeJson.tileString
   });
+};
+
+export const initializeChallengeState = () => {
+  const challengeState = window.localStorage.challengeState;
+  if (typeof challengeState === 'string') {
+    return Immutable.fromJS(JSON.parse(challengeState));
+  }
+  return loadServerChallenge(window.initialData);
 };
 
 /* Action creators */

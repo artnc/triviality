@@ -46,6 +46,10 @@ const combinedReducer = immutableCombineReducers({
   tiles
 });
 
+const persistState = (state) => {
+  window.localStorage.challengeState = JSON.stringify(state.toJS());
+};
+
 // Undo history is implemented using a stack of states stored in the HISTORY_KEY
 // array, which is the only state item exempt from versioning. An individual
 // state is pushed to HISTORY_KEY with its own HISTORY_KEY stripped, and it is
@@ -53,6 +57,7 @@ const combinedReducer = immutableCombineReducers({
 // in. The store is then hydrated with the popped (i.e. previous) state.
 const HISTORY_KEY = '_stateHistory';
 const rootReducer = (state = Immutable.Map({}), action) => {
+  state = combinedReducer(state, action);
   switch (action.type) {
     case HISTORY_STATE_POP: {
       const history = state.get(HISTORY_KEY);
@@ -84,6 +89,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
         state = state.set('solved', true);
         console.log('Solved!');
       }
+      persistState(state);
       break;
     }
     case TILE_REMOVE: {
@@ -95,6 +101,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
         guess: state.get('guess').slice(0, -1),
         guessTileIds: guessTileIds.pop()
       });
+      persistState(state);
       break;
     }
     case TILE_SELECT: {
@@ -104,6 +111,6 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       break;
     }
   }
-  return combinedReducer(state, action);
+  return state;
 };
 export default rootReducer;
