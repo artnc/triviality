@@ -1,4 +1,6 @@
 import Immutable from 'immutable';
+import {GRID_HEIGHT, GRID_WIDTH} from './constants';
+import {getChallenge} from './util/jservice';
 
 /* Action types */
 
@@ -15,7 +17,8 @@ export const TILE_SELECT = 'TILE_SELECT';
 const RUN_DELIMITER = '@#"';
 
 // Converts the server's challenge format into a complete Redux state
-const loadServerChallenge = (challengeJson) => {
+const loadNewChallenge = (challengeJson) => {
+  // Post-process challenge
   const solutionChars = challengeJson.tileString.split('');
   const solutionRuns = challengeJson.solution.trim().replace(
     /(\w+)/g,
@@ -23,6 +26,13 @@ const loadServerChallenge = (challengeJson) => {
   ).split(RUN_DELIMITER).filter((run) => run.length).map((run) => (
     run.charAt(0).match(/\w/) ? run.length : run
   ));
+
+  // Mark challenge as seen
+  const seenChallenges = JSON.parse(localStorage.seenChallenges || '[]');
+  if (!seenChallenges.includes(challengeJson.id)) {
+    seenChallenges.push(challengeJson.id);
+    localStorage.seenChallenges = JSON.stringify(seenChallenges);
+  }
 
   return Immutable.fromJS({
     filteredSolution: challengeJson.solution.replace(/[^\w]/g, ''),
@@ -43,7 +53,7 @@ export const initializeChallengeState = () => {
   if (typeof challengeState === 'string') {
     return Immutable.fromJS(JSON.parse(challengeState));
   }
-  return loadServerChallenge(window.initialData);
+  return loadNewChallenge(window.initialData);
 };
 
 /* Action creators */
@@ -55,6 +65,18 @@ export const pushHistoryState = () => ({type: HISTORY_STATE_PUSH});
 export const hydrate = (hydrateState) => ({
   state: hydrateState,
   type: HYDRATE
+});
+
+export const hydrateNewChallenge = () => ((dispatch) => {
+  const bankSize = GRID_HEIGHT * GRID_WIDTH;
+  const seenChallenges = JSON.parse(localStorage.seenChallenges || '[]');
+  getChallenge(bankSize, seenChallenges, (challenge) => {
+    const hydrateState = loadNewChallenge(challenge);
+    console.log(hydrateState.toJS());
+    window.setTimeout(() => (
+      dispatch(hydrate(hydrateState))
+    ), 2000);
+  });
 });
 
 export const addTile = (tileId, char) => ({

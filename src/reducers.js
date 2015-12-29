@@ -7,7 +7,6 @@ import {
   TILE_REMOVE,
   TILE_SELECT,
   hydrate
-
 } from './actions';
 
 /* Substate reducers */
@@ -66,7 +65,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       }
       const previousState = history.last();
       const hydrateState = previousState.set(HISTORY_KEY, history.pop());
-      state = rootReducer(null, hydrate(hydrateState));
+      state = rootReducer(undefined, hydrate(hydrateState));
       break;
     }
     case HISTORY_STATE_PUSH: {
@@ -76,6 +75,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
     }
     case HYDRATE: {
       state = rootReducer(action.state, {});
+      persistState(state);
       break;
     }
     case TILE_ADD: {
@@ -87,7 +87,6 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       });
       if (guess === state.get('filteredSolution')) {
         state = state.set('solved', true);
-        console.log('Solved!');
       }
       persistState(state);
       break;
