@@ -42,6 +42,7 @@ const App = React.createClass({
           difficulty={difficulty}
           hints={hints}
           selectedTileId={selectedTileId}
+          solved={solved}
         />
         <Prompt>{prompt}</Prompt>
         <Guess

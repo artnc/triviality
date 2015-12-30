@@ -70,7 +70,7 @@ const INITIAL_STATE = {
   hints: 5
 };
 export const hydrateNewQuestion = initStateForNewUser => (dispatch => {
-  const delay = initStateForNewUser ? 0 : 2000;
+  const delay = initStateForNewUser ? 0 : 3000;
   const bankSize = GRID_HEIGHT * GRID_WIDTH;
   const seenQuestions = JSON.parse(localStorage.seenQuestions || '[]');
   let waiting = !!delay;
