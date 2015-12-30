@@ -68,7 +68,8 @@ const currentQuestion = (state, action) => {
       state = state.merge({
         guess,
         guessTileIds: guessTileIds.set(hintIndex, hintChar),
-        tiles: state.get('tiles').set(hintTile.id, hintTile.merge({
+        tiles: state.get('tiles').set(hintTile.get('id'), hintTile.merge({
+          solved: true,
           used: true
         }))
       });

@@ -47,6 +47,7 @@ const App = React.createClass({
         <Prompt>{prompt}</Prompt>
         <Guess
           guess={guess}
+          guessTileIds={guessTileIds}
           onPromptClick={() => {
             guessTileIds.size && dispatch(removeTile(guessTileIds.last()));
           }}

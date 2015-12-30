@@ -6,7 +6,13 @@ import {createPureComponent} from '../util/react';
 
 export const Guess = createPureComponent({
   render() {
-    const {guess, onPromptClick, solutionRuns, solved} = this.props;
+    const {
+      guess,
+      guessTileIds,
+      onPromptClick,
+      solutionRuns,
+      solved
+    } = this.props;
 
     let slotGroupPosition = 0;
     return (
@@ -26,9 +32,14 @@ export const Guess = createPureComponent({
           }
 
           const slotGroup = [];
+          let guessIndex;
           for (let i = 0; i < run; ++i) {
+            guessIndex = slotGroupPosition + i;
             slotGroup.push(
-              <Slot>{guess.get(slotGroupPosition + i) || '\u00a0'}</Slot>
+              <Slot
+                solved={solved ||
+                  typeof guessTileIds.get(guessIndex) === 'string'}
+              >{guess.get(guessIndex) || '\u00a0'}</Slot>
             );
           }
 
