@@ -44,6 +44,7 @@ export const Bank = createPureComponent({
         start = null;
         if (i === BANK_EXTRAS_ROW && j === 0) {
           start = <Tile
+            hoverText = 'Quit'
             onTileClick={onExitClick}
             selectedTileId={selectedTileId}
             tile={({
@@ -59,6 +60,7 @@ export const Bank = createPureComponent({
         end = null;
         if (i === BANK_EXTRAS_ROW && j === paddedWidth - 1) {
           end = <Tile
+            hoverText = 'Use a hint'
             onTileClick={onHintClick}
             selectedTileId={selectedTileId}
             tile={({

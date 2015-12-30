@@ -6,6 +6,7 @@ import styles from './Tile.scss';
 export const Tile = createPureComponent({
   render() {
     const {
+      hoverText,
       onTileClick,
       selectedTileId,
       tile
@@ -20,6 +21,7 @@ export const Tile = createPureComponent({
             [styles.used]: tile.used
           }
         )}
+        title={hoverText}
         onClick={() => {
           onTileClick(tile);
         }}
