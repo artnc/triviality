@@ -8,7 +8,7 @@ import {
   removeTile,
   selectTile
 } from './actions';
-import {GRID_HEIGHT, GRID_WIDTH} from './constants';
+import {BANK_EXTRAS_ROW, GRID_HEIGHT, GRID_WIDTH} from './constants';
 import App from './containers/App';
 import rootReducer from './reducers';
 import createStoreWithMiddleware from './store';
@@ -46,9 +46,22 @@ document.addEventListener('keydown', e => {
       const filteredSolution = state.get('filteredSolution');
       const guess = state.get('guess');
       const selectedTileId = state.get('selectedTileId');
-      const tile = state.get('tiles').get(selectedTileId);
-      if (!tile.get('used') && guess.length < filteredSolution.length) {
-        store.dispatch(addTile(selectedTileId, tile.get('char')));
+      switch (selectedTileId) {
+        case 'EXIT': {
+          console.log('exiting');
+          break;
+        }
+        case 'HINT': {
+          console.log('using hint');
+          break;
+        }
+        default: {
+          const tile = state.get('tiles').get(selectedTileId);
+          if (!tile.get('used') && guess.length < filteredSolution.length) {
+            store.dispatch(addTile(selectedTileId, tile.get('char')));
+          }
+          break;
+        }
       }
       break;
     }
@@ -57,20 +70,45 @@ document.addEventListener('keydown', e => {
     case 39: // Right
     case 40: { // Down
       const selectedTileId = state.get('selectedTileId');
+      let x, y, nextTileId;
 
-      // Get current tile position
-      let x = selectedTileId % GRID_WIDTH;
-      let y = Math.floor(selectedTileId / GRID_WIDTH);
+      if (selectedTileId === 'EXIT') {
+        nextTileId = selectedTileId;
+        if (keyCode === 37) {
+          nextTileId = 'HINT';
+        } else if (keyCode === 39) {
+          nextTileId = BANK_EXTRAS_ROW * GRID_WIDTH;
+        }
+      } else if (selectedTileId === 'HINT') {
+        nextTileId = selectedTileId;
+        if (keyCode === 37) {
+          nextTileId = (BANK_EXTRAS_ROW + 1) * GRID_WIDTH - 1;
+        } else if (keyCode === 39) {
+          nextTileId = 'EXIT';
+        }
+      } else if (selectedTileId === BANK_EXTRAS_ROW * GRID_WIDTH &&
+        keyCode === 37) {
+        nextTileId = 'EXIT';
+      } else if (selectedTileId === (BANK_EXTRAS_ROW + 1) * GRID_WIDTH - 1 &&
+        keyCode === 39) {
+        nextTileId = 'HINT';
+      } else {
+        // Get current tile position
+        x = selectedTileId % GRID_WIDTH;
+        y = Math.floor(selectedTileId / GRID_WIDTH);
 
-      // Calculate next tile position
-      x += (keyCode % 2) * (keyCode - 38);
-      y += (1 - keyCode % 2) * (keyCode - 39);
+        // Calculate next tile position
+        x += (keyCode % 2) * (keyCode - 38);
+        y += (1 - keyCode % 2) * (keyCode - 39);
 
-      // Handle wrapping
-      x = (x + GRID_WIDTH) % GRID_WIDTH;
-      y = (y + GRID_HEIGHT) % GRID_HEIGHT;
+        // Handle wrapping
+        x = (x + GRID_WIDTH) % GRID_WIDTH;
+        y = (y + GRID_HEIGHT) % GRID_HEIGHT;
 
-      store.dispatch(selectTile(y * GRID_WIDTH + x));
+        nextTileId = y * GRID_WIDTH + x;
+      }
+
+      store.dispatch(selectTile(nextTileId));
       break;
     }
     default: {

@@ -52,6 +52,9 @@ const App = React.createClass({
               window.location.href = 'https://chaidarun.com/';
             }
           }}
+          onHintClick={() => {
+            console.log('dispensing some hint');
+          }}
           onTileClick={tile => {
             if (!tile.used && guess.length < filteredSolution.length) {
               dispatch(addTile(tile.id, tile.char));

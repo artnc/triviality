@@ -1,12 +1,14 @@
 import classNames from 'classnames';
 import React from 'react';
-import {BANK_EXTRAS_ROW, GRID_HEIGHT, GRID_WIDTH} from '../constants';
+import {
+  BANK_EXTRAS_ROW,
+  GRID_HEIGHT,
+  GRID_WIDTH,
+  SIDE_PADDING
+} from '../constants';
 import {createPureComponent} from '../util/react';
 import styles from './Bank.scss';
 import {Tile} from './Tile';
-
-// Number of extra columns added to both left and right sides of bank
-const SIDE_PADDING = 2;
 
 export const Bank = createPureComponent({
   render() {
@@ -48,7 +50,7 @@ export const Bank = createPureComponent({
             onTileClick={onExitClick}
             selectedTileId={selectedTileId}
             tile={({
-              char: '\u00ab',
+              char: '\u00d7',
               id: 'EXIT',
               used: false
             })}
