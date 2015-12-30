@@ -75,7 +75,6 @@ export const Bank = createPureComponent({
         grid[i][j] = <td key={i * paddedWidth + j}>{end}</td>;
       }
     }
-    console.log(grid);
 
     return (
       <table className={classNames(

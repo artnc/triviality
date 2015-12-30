@@ -12,6 +12,7 @@ const App = React.createClass({
   render() {
     const {
       currentQuestion,
+      hints,
       dispatch
     } = this.props;
 
@@ -35,6 +36,8 @@ const App = React.createClass({
         <QuestionMetadata
           category={category}
           difficulty={difficulty}
+          hints={hints}
+          selectedTileId={selectedTileId}
         />
         <Prompt>{prompt}</Prompt>
         <Guess
@@ -65,6 +68,7 @@ const App = React.createClass({
 });
 
 const mapStateToProps = state => ({
-  currentQuestion: state.get('currentQuestion')
+  currentQuestion: state.get('currentQuestion'),
+  hints: state.get('hints')
 });
 export default connect(mapStateToProps)(App);
