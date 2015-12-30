@@ -115,10 +115,12 @@ const currentQuestion = (state, action) => {
       break;
     }
     case TILE_SELECT: {
-      if (!state.get('solved')) {
-        state = state.set('selectedTileId', action.tileId);
-        playSound(SOUNDS.BUTTON);
+      const tileId = action.tileId;
+      if (state.get('solved') || tileId === state.get('selectedTileId')) {
+        break;
       }
+      state = state.set('selectedTileId', tileId);
+      playSound(SOUNDS.BUTTON);
       break;
     }
   }

@@ -51,7 +51,7 @@ const preprocessQuestion = question => {
       .replace(/\\/g, '')
       .replace(/, ?([^\d])/g, ', $1')
       .replace(/: ?/g, ': ')
-      .replace(/ -- /g, '\u2014')
+      .replace(/ *-- */g, '\u2014')
       .replace(/ ?& ?/g, ' and ')
       .trim()
   });
