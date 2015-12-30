@@ -1,6 +1,9 @@
 import http from './http';
 
 const BAD_STRINGS = [
+  '(jimmy ',
+  '(kelly ',
+  '(sarah ',
   'clue crew',
   'heard here',
   'seen here'
@@ -43,7 +46,8 @@ const preprocessChallenge = (challenge) => {
       .trim(),
     question: stripHtmlTags(challenge.question)
       .replace(/\\/g, '')
-      .replace(/([:,]) ?/g, '$1 ')
+      .replace(/([^\d]), ?/g, '$1, ')
+      .replace(/: ?/g, ': ')
       .replace(/ ?& ?/g, ' and ')
       .trim()
   });
