@@ -43,8 +43,8 @@ const preprocessChallenge = (challenge) => {
       .trim(),
     question: stripHtmlTags(challenge.question)
       .replace(/\\/g, '')
-      .replace(/: ?/g, ': ')
-      .replace(/ ?(&) ?/g, ' and ')
+      .replace(/([:,]) ?/g, '$1 ')
+      .replace(/ ?& ?/g, ' and ')
       .trim()
   });
   return processedChallenge;
