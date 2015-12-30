@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {
   addTile,
-  initializeChallengeState,
+  initializeQuestionState,
   removeTile,
   selectTile
 } from './actions';
@@ -16,7 +16,7 @@ import './styles/global.scss';
 /* Initialize Redux */
 
 const store = createStoreWithMiddleware(rootReducer);
-store.dispatch(initializeChallengeState());
+store.dispatch(initializeQuestionState());
 
 /* Initialize React */
 

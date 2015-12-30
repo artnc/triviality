@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addTile, hydrateNewChallenge, removeTile} from '../actions';
+import {addTile, hydrateNewQuestion, removeTile} from '../actions';
 import {Bank} from '../components/Bank';
 import {Guess} from '../components/Guess';
 import {Prompt} from '../components/Prompt';
@@ -23,7 +23,7 @@ const App = React.createClass({
       tiles
     } = this.props;
 
-    solved && dispatch(hydrateNewChallenge());
+    solved && dispatch(hydrateNewQuestion());
 
     return (
       <div className={styles.app}>

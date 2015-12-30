@@ -46,7 +46,7 @@ const combinedReducer = immutableCombineReducers({
 });
 
 const persistState = state => {
-  window.localStorage.challengeState = JSON.stringify(state.toJS());
+  window.localStorage.questionState = JSON.stringify(state.toJS());
 };
 
 // Undo history is implemented using a stack of states stored in the HISTORY_KEY

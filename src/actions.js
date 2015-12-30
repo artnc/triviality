@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 import {GRID_HEIGHT, GRID_WIDTH} from './constants';
-import {getChallenge} from './util/jservice';
+import {getQuestion} from './util/jservice';
 
 /* Action types */
 
@@ -16,37 +16,37 @@ export const TILE_SELECT = 'TILE_SELECT';
 // Arbitrary constant unlikely to ever appear naturally
 const RUN_DELIMITER = '@#"';
 
-// Converts the server's challenge format into a complete Redux state
-const loadNewChallenge = challengeJson => {
-  // Post-process challenge
-  const solutionChars = challengeJson.tileString.split('');
-  const solutionRuns = challengeJson.solution.trim().replace(
+// Converts the server's question format into a complete Redux state
+const loadNewQuestion = questionJson => {
+  // Post-process question
+  const solutionChars = questionJson.tileString.split('');
+  const solutionRuns = questionJson.solution.trim().replace(
     /(\w+)/g,
     `${RUN_DELIMITER}$1${RUN_DELIMITER}`
   ).split(RUN_DELIMITER).filter(run => run.length).map((run) => (
     run.charAt(0).match(/\w/) ? run.length : run
   ));
 
-  // Mark challenge as seen
-  const seenChallenges = JSON.parse(localStorage.seenChallenges || '[]');
-  if (!seenChallenges.includes(challengeJson.id)) {
-    seenChallenges.push(challengeJson.id);
-    localStorage.seenChallenges = JSON.stringify(seenChallenges);
+  // Mark question as seen
+  const seenQuestions = JSON.parse(localStorage.seenQuestions || '[]');
+  if (!seenQuestions.includes(questionJson.id)) {
+    seenQuestions.push(questionJson.id);
+    localStorage.seenQuestions = JSON.stringify(seenQuestions);
   }
 
   return Immutable.fromJS({
-    category: challengeJson.category,
-    difficulty: challengeJson.difficulty,
-    filteredSolution: challengeJson.solution.replace(/[^\w]/g, ''),
+    category: questionJson.category,
+    difficulty: questionJson.difficulty,
+    filteredSolution: questionJson.solution.replace(/[^\w]/g, ''),
     guess: '',
     guessTileIds: [],
-    id: challengeJson.id,
-    prompt: challengeJson.prompt,
+    id: questionJson.id,
+    prompt: questionJson.prompt,
     selectedTileId: 0,
     solutionRuns,
     solved: false,
     tiles: solutionChars.map((char, id) => ({char, id, used: false})),
-    tileString: challengeJson.tileString
+    tileString: questionJson.tileString
   });
 };
 
@@ -61,14 +61,14 @@ export const hydrate = hydrateState => ({
   type: HYDRATE
 });
 
-export const hydrateNewChallenge = (delay = 2000) => (dispatch => {
+export const hydrateNewQuestion = (delay = 2000) => (dispatch => {
   const bankSize = GRID_HEIGHT * GRID_WIDTH;
-  const seenChallenges = JSON.parse(localStorage.seenChallenges || '[]');
+  const seenQuestions = JSON.parse(localStorage.seenQuestions || '[]');
   let waiting = !!delay;
   let hydrateState;
   const dispatchHydrate = () => dispatch(hydrate(hydrateState));
-  getChallenge(bankSize, seenChallenges, challenge => {
-    hydrateState = loadNewChallenge(challenge);
+  getQuestion(bankSize, seenQuestions, question => {
+    hydrateState = loadNewQuestion(question);
     !waiting && dispatchHydrate();
   });
   delay && window.setTimeout(() => {
@@ -79,12 +79,12 @@ export const hydrateNewChallenge = (delay = 2000) => (dispatch => {
     }
   }, delay);
 });
-export const initializeChallengeState = () => {
-  const challengeState = window.localStorage.challengeState;
-  if (typeof challengeState === 'string') {
-    return hydrate(Immutable.fromJS(JSON.parse(challengeState)));
+export const initializeQuestionState = () => {
+  const questionState = window.localStorage.questionState;
+  if (typeof questionState === 'string') {
+    return hydrate(Immutable.fromJS(JSON.parse(questionState)));
   }
-  return hydrateNewChallenge(0);
+  return hydrateNewQuestion(0);
 };
 
 export const addTile = (tileId, char) => ({

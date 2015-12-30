@@ -9,21 +9,21 @@ const BAD_STRINGS = [
   'heard here',
   'seen here'
 ];
-const isChallengeValid = (bankSize, seenChallenges, challenge) => {
-  const lowercasedClueText = challenge.question.toLowerCase();
+const isQuestionValid = (bankSize, seenQuestions, question) => {
+  const lowercasedClueText = question.question.toLowerCase();
   let valid;
   try {
-    valid = challenge.value &&
-      challenge.value >= 600 &&
-      challenge.value <= 1200 &&
-      challenge.value !== 1000 &&
-      challenge.answer.length &&
-      challenge.question.length &&
-      challenge.invalid_count === null &&
+    valid = question.value &&
+      question.value >= 600 &&
+      question.value <= 1200 &&
+      question.value !== 1000 &&
+      question.answer.length &&
+      question.question.length &&
+      question.invalid_count === null &&
       lowercasedClueText.length <= 140 &&
-      challenge.answer.match(/\w/g).length <= bankSize &&
+      question.answer.match(/\w/g).length <= bankSize &&
       !BAD_STRINGS.some(s => lowercasedClueText.includes(s)) &&
-      !seenChallenges.includes(challenge.id);
+      !seenQuestions.includes(question.id);
   } catch (e) {
     valid = false;
   }
@@ -37,24 +37,24 @@ const stripHtmlTags = html => {
 };
 
 const DOUBLED_PRICES_AIRDATE = '2001-11-26T12:00:00.000Z';
-const preprocessChallenge = challenge => {
-  if (challenge.airdate < DOUBLED_PRICES_AIRDATE) {
-    challenge.value *= 2;
+const preprocessQuestion = question => {
+  if (question.airdate < DOUBLED_PRICES_AIRDATE) {
+    question.value *= 2;
   }
-  const processedChallenge = Object.assign({}, challenge, {
-    answer: stripHtmlTags(challenge.answer)
+  const processedQuestion = Object.assign({}, question, {
+    answer: stripHtmlTags(question.answer)
       .replace(/\\/g, '')
       .replace(/^an? /, '')
       .replace(/\(.+\) ?/g, '')
       .trim(),
-    question: stripHtmlTags(challenge.question)
+    question: stripHtmlTags(question.question)
       .replace(/\\/g, '')
       .replace(/, ?([^\d])/g, ', $1')
       .replace(/: ?/g, ': ')
       .replace(/ ?& ?/g, ' and ')
       .trim()
   });
-  return processedChallenge;
+  return processedQuestion;
 };
 
 const LETTERS = `${'AEHINORST'.repeat(3)}${'BCDFGKLMPUVWY'.repeat(2)}JXQZ`;
@@ -85,22 +85,22 @@ const generateTileString = (bankSize, solution) => {
   return shuffleString(tileString);
 };
 
-const postprocessChallenge = (bankSize, challenge) => {
-  const uppercasedSolution = challenge.answer.toUpperCase();
+const postprocessQuestion = (bankSize, question) => {
+  const uppercasedSolution = question.answer.toUpperCase();
   return {
-    category: challenge.category.title,
-    difficulty: challenge.value,
-    id: challenge.id,
-    prompt: challenge.question,
+    category: question.category.title,
+    difficulty: question.value,
+    id: question.id,
+    prompt: question.question,
     solution: uppercasedSolution,
     tileString: generateTileString(bankSize, uppercasedSolution)
   };
 };
 
-export const getChallenge = (bankSize, seenChallenges, callback) => {
+export const getQuestion = (bankSize, seenQuestions, callback) => {
   console.log('Calling jService API...');
   const retry = () => window.setTimeout(() => (
-    getChallenge(bankSize, seenChallenges, callback)
+    getQuestion(bankSize, seenQuestions, callback)
   ), 125);
   http.getJSON('http://jservice.io/api/random', data => {
     if (data === null) {
@@ -108,16 +108,16 @@ export const getChallenge = (bankSize, seenChallenges, callback) => {
       retry();
       return;
     }
-    const challenge = preprocessChallenge(data[0]);
-    if (!isChallengeValid(bankSize, seenChallenges, challenge)) {
+    const question = preprocessQuestion(data[0]);
+    if (!isQuestionValid(bankSize, seenQuestions, question)) {
       console.log(
         'Call to jService API returned bad data. Retry scheduled.',
-        challenge
+        question
       );
       retry();
       return;
     }
     console.log('Call to jService API succeeded.');
-    callback(postprocessChallenge(bankSize, challenge));
+    callback(postprocessQuestion(bankSize, question));
   });
 };
