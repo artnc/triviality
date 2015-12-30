@@ -16,7 +16,7 @@ export const Bank = createPureComponent({
 
     // Construct cell grid using tiles' x and y coordinates
     const grid = Array(GRID_HEIGHT).fill().map(() => Array(GRID_WIDTH));
-    tiles.forEach((tile, i) => {
+    tiles && tiles.forEach((tile, i) => {
       grid[Math.floor(i / GRID_WIDTH)][i % GRID_WIDTH] = (
         <td key={i}>
           <Tile

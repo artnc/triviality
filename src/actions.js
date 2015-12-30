@@ -48,14 +48,6 @@ const loadNewChallenge = (challengeJson) => {
   });
 };
 
-export const initializeChallengeState = () => {
-  const challengeState = window.localStorage.challengeState;
-  if (typeof challengeState === 'string') {
-    return Immutable.fromJS(JSON.parse(challengeState));
-  }
-  return loadNewChallenge(window.initialData);
-};
-
 /* Action creators */
 
 export const popHistoryState = () => ({type: HISTORY_STATE_POP});
@@ -67,10 +59,10 @@ export const hydrate = (hydrateState) => ({
   type: HYDRATE
 });
 
-export const hydrateNewChallenge = () => ((dispatch) => {
+export const hydrateNewChallenge = (delay = 2000) => ((dispatch) => {
   const bankSize = GRID_HEIGHT * GRID_WIDTH;
   const seenChallenges = JSON.parse(localStorage.seenChallenges || '[]');
-  let waiting = true;
+  let waiting = !!delay;
   let hydrateState;
   const dispatchHydrate = () => dispatch(hydrate(hydrateState));
   getChallenge(bankSize, seenChallenges, (challenge) => {
@@ -78,14 +70,21 @@ export const hydrateNewChallenge = () => ((dispatch) => {
     console.log(hydrateState.toJS());
     !waiting && dispatchHydrate();
   });
-  window.setTimeout(() => {
+  delay && window.setTimeout(() => {
     if (hydrateState) {
       dispatchHydrate();
     } else {
       waiting = false;
     }
-  }, 2000);
+  }, delay);
 });
+export const initializeChallengeState = () => {
+  const challengeState = window.localStorage.challengeState;
+  if (typeof challengeState === 'string') {
+    return hydrate(Immutable.fromJS(JSON.parse(challengeState)));
+  }
+  return hydrateNewChallenge(0);
+};
 
 export const addTile = (tileId, char) => ({
   char,

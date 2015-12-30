@@ -14,13 +14,13 @@ export const Guess = createPureComponent({
         className={classNames(
           styles.guess,
           {
-            [styles.populated]: guess.length,
+            [styles.populated]: guess && guess.length,
             [styles.solved]: solved
           }
         )}
         onClick={onPromptClick}
       >
-        {solutionRuns.map((run) => {
+        {solutionRuns && solutionRuns.map((run) => {
           if (typeof run === 'string') {
             return run;
           }
