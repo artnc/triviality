@@ -60,12 +60,10 @@ const getRandomChar = (pool) => {
 const shuffleString = (string) => {
   const a = string.split('');
   const n = a.length;
-  let j, tmp;
+  let j;
   for (let i = n - 1; i; --i) {
     j = Math.floor(Math.random() * (i + 1));
-    tmp = a[i];
-    a[i] = a[j];
-    a[j] = tmp;
+    [a[i], a[j]] = [a[j], a[i]];
   }
   return a.join('');
 };
