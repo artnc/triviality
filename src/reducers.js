@@ -9,6 +9,7 @@ import {
   TILE_SELECT,
   hydrate
 } from './actions';
+import {SOUNDS, playSound} from './util/audio';
 
 /* Reducer utils */
 
@@ -46,6 +47,15 @@ const tiles = (state, action) => {
 const isSolved = (guess, state) => (
   guess.join('') === state.get('filteredSolution')
 );
+const playNewTileSound = (state, defaultSound) => {
+  if (state.get('solved')) {
+    playSound(SOUNDS.WIN);
+  } else if (state.get('guess').includes(null)) {
+    playSound(defaultSound);
+  } else {
+    playSound(SOUNDS.ERROR);
+  }
+};
 const currenQuestionCombinedReducer = immutableCombineReducers({
   tiles
 });
@@ -74,6 +84,7 @@ const currentQuestion = (state, action) => {
         }))
       });
       state = state.set('solved', isSolved(guess, state));
+      playNewTileSound(state, SOUNDS.HINT);
       break;
     }
     case TILE_ADD: {
@@ -85,6 +96,7 @@ const currentQuestion = (state, action) => {
         selectedTileId: action.tileId
       });
       state = state.set('solved', isSolved(guess, state));
+      playNewTileSound(state, SOUNDS.LETTER);
       break;
     }
     case TILE_REMOVE: {
@@ -99,11 +111,13 @@ const currentQuestion = (state, action) => {
         guess: state.get('guess').set(removeIndex, null),
         guessTileIds: guessTileIds.set(removeIndex, null)
       });
+      playSound(SOUNDS.ERASE);
       break;
     }
     case TILE_SELECT: {
       if (!state.get('solved')) {
         state = state.set('selectedTileId', action.tileId);
+        playSound(SOUNDS.BUTTON);
       }
       break;
     }
