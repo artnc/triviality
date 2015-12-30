@@ -58,7 +58,7 @@ const App = React.createClass({
           hints={hints}
           onExitClick={exit}
           onHintClick={() => {
-            hints && hints >= 1 && dispatch(useHint());
+            hints && hints >= 1 && !solved && dispatch(useHint());
           }}
           onTileClick={tile => {
             if (!tile.used && guess.includes(null)) {

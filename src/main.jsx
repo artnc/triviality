@@ -56,7 +56,9 @@ document.addEventListener('keydown', e => {
           break;
         }
         case 'HINT': {
-          store.getState().get('hints', 0) >= 1 && store.dispatch(useHint());
+          if (!state.get('solved') && store.getState().get('hints', 0) >= 1) {
+            store.dispatch(useHint());
+          }
           break;
         }
         default: {
