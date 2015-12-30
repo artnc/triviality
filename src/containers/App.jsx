@@ -4,11 +4,14 @@ import {addTile, hydrateNewChallenge, removeTile} from '../actions';
 import {Bank} from '../components/Bank';
 import {Guess} from '../components/Guess';
 import {Prompt} from '../components/Prompt';
+import {QuestionMetadata} from '../components/QuestionMetadata';
 import styles from '../containers/App.scss';
 
 const App = React.createClass({
   render() {
     const {
+      category,
+      difficulty,
       dispatch,
       filteredSolution,
       guess,
@@ -24,6 +27,10 @@ const App = React.createClass({
 
     return (
       <div className={styles.app}>
+        <QuestionMetadata
+          category={category}
+          difficulty={difficulty}
+        />
         <Prompt>{prompt}</Prompt>
         <Guess
           guess={guess}
@@ -49,6 +56,8 @@ const App = React.createClass({
 });
 
 const mapStateToProps = (state) => ({
+  category: state.get('category'),
+  difficulty: state.get('difficulty'),
   filteredSolution: state.get('filteredSolution'),
   guess: state.get('guess'),
   guessTileIds: state.get('guessTileIds'),

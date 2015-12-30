@@ -1,0 +1,16 @@
+@import '../styles/variables';
+
+.question-metadata {
+  font-size: $small-font-size;
+  margin: 0 0 2vmin;
+  opacity: 0.3;
+}
+
+.bold {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.for {
+  font-style: italic;
+}

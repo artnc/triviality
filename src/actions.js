@@ -35,6 +35,8 @@ const loadNewChallenge = (challengeJson) => {
   }
 
   return Immutable.fromJS({
+    category: challengeJson.category,
+    difficulty: challengeJson.difficulty,
     filteredSolution: challengeJson.solution.replace(/[^\w]/g, ''),
     guess: '',
     guessTileIds: [],
@@ -67,7 +69,6 @@ export const hydrateNewChallenge = (delay = 2000) => ((dispatch) => {
   const dispatchHydrate = () => dispatch(hydrate(hydrateState));
   getChallenge(bankSize, seenChallenges, (challenge) => {
     hydrateState = loadNewChallenge(challenge);
-    console.log(hydrateState.toJS());
     !waiting && dispatchHydrate();
   });
   delay && window.setTimeout(() => {

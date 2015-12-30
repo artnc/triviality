@@ -1,6 +1,7 @@
 import http from './http';
 
 const BAD_STRINGS = [
+  '(i\m ',
   '(jimmy ',
   '(kelly ',
   '(sarah ',
@@ -15,9 +16,11 @@ const isChallengeValid = (bankSize, seenChallenges, challenge) => {
     valid = challenge.value &&
       challenge.value >= 600 &&
       challenge.value <= 1200 &&
+      challenge.value !== 1000 &&
       challenge.answer.length &&
       challenge.question.length &&
       challenge.invalid_count === null &&
+      lowercasedClueText.length <= 140 &&
       challenge.answer.match(/\w/g).length <= bankSize &&
       !BAD_STRINGS.some((s) => lowercasedClueText.includes(s)) &&
       !seenChallenges.includes(challenge.id);
@@ -46,7 +49,7 @@ const preprocessChallenge = (challenge) => {
       .trim(),
     question: stripHtmlTags(challenge.question)
       .replace(/\\/g, '')
-      .replace(/([^\d]), ?/g, '$1, ')
+      .replace(/, ?([^\d])/g, ', $1')
       .replace(/: ?/g, ': ')
       .replace(/ ?& ?/g, ' and ')
       .trim()
@@ -85,6 +88,8 @@ const generateTileString = (bankSize, solution) => {
 const postprocessChallenge = (bankSize, challenge) => {
   const uppercasedSolution = challenge.answer.toUpperCase();
   return {
+    category: challenge.category.title,
+    difficulty: challenge.value,
     id: challenge.id,
     prompt: challenge.question,
     solution: uppercasedSolution,
