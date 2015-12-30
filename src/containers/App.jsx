@@ -45,6 +45,13 @@ const App = React.createClass({
           solved={solved}
         />
         <Bank
+          onExitClick={() => {
+            if (window.tvMode) {
+              window.open('', '_self').close();
+            } else {
+              window.location.href = 'https://chaidarun.com/';
+            }
+          }}
           onTileClick={tile => {
             if (!tile.used && guess.length < filteredSolution.length) {
               dispatch(addTile(tile.id, tile.char));
