@@ -1,6 +1,7 @@
 import React from 'react';
 import {createPureComponent} from '../util/react';
 import styles from '../components/QuestionMetadata.scss';
+import {EXIT_TILE_ID, HINT_TILE_ID} from '../constants';
 
 export const QuestionMetadata = createPureComponent({
   render() {
@@ -14,11 +15,11 @@ export const QuestionMetadata = createPureComponent({
       children = `Question #${numQuestions} solved! ${hintsMessage}`;
     } else {
       switch (selectedTileId) {
-        case 'EXIT': {
+        case EXIT_TILE_ID: {
           children = 'Thanks for playing! Your progress will be saved.';
           break;
         }
-        case 'HINT': {
+        case HINT_TILE_ID: {
           children = h ? `${hintsMessage} Use one?` : 'You have no hints left!';
           break;
         }

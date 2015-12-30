@@ -9,7 +9,13 @@ import {
   selectTile,
   useHint
 } from './actions';
-import {BANK_EXTRAS_ROW, GRID_HEIGHT, GRID_WIDTH} from './constants';
+import {
+  BANK_EXTRAS_ROW,
+  EXIT_TILE_ID,
+  HINT_TILE_ID,
+  GRID_HEIGHT,
+  GRID_WIDTH
+} from './constants';
 import App from './containers/App';
 import rootReducer from './reducers';
 import createStoreWithMiddleware from './store';
@@ -51,11 +57,11 @@ document.addEventListener('keydown', e => {
       const guess = state.get('guess');
       const selectedTileId = state.get('selectedTileId');
       switch (selectedTileId) {
-        case 'EXIT': {
+        case EXIT_TILE_ID: {
           exit();
           break;
         }
-        case 'HINT': {
+        case HINT_TILE_ID: {
           if (!state.get('solved') && store.getState().get('hints', 0) >= 1) {
             store.dispatch(useHint());
           }
@@ -78,26 +84,26 @@ document.addEventListener('keydown', e => {
       const selectedTileId = state.get('selectedTileId');
       let x, y, nextTileId;
 
-      if (selectedTileId === 'EXIT') {
+      if (selectedTileId === EXIT_TILE_ID) {
         nextTileId = selectedTileId;
         if (keyCode === 37) {
-          nextTileId = 'HINT';
+          nextTileId = HINT_TILE_ID;
         } else if (keyCode === 39) {
           nextTileId = BANK_EXTRAS_ROW * GRID_WIDTH;
         }
-      } else if (selectedTileId === 'HINT') {
+      } else if (selectedTileId === HINT_TILE_ID) {
         nextTileId = selectedTileId;
         if (keyCode === 37) {
           nextTileId = (BANK_EXTRAS_ROW + 1) * GRID_WIDTH - 1;
         } else if (keyCode === 39) {
-          nextTileId = 'EXIT';
+          nextTileId = EXIT_TILE_ID;
         }
       } else if (selectedTileId === BANK_EXTRAS_ROW * GRID_WIDTH &&
         keyCode === 37) {
-        nextTileId = 'EXIT';
+        nextTileId = EXIT_TILE_ID;
       } else if (selectedTileId === (BANK_EXTRAS_ROW + 1) * GRID_WIDTH - 1 &&
         keyCode === 39) {
-        nextTileId = 'HINT';
+        nextTileId = HINT_TILE_ID;
       } else {
         // Get current tile position
         x = selectedTileId % GRID_WIDTH;

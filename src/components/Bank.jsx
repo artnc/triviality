@@ -2,6 +2,8 @@ import classNames from 'classnames';
 import React from 'react';
 import {
   BANK_EXTRAS_ROW,
+  EXIT_TILE_ID,
+  HINT_TILE_ID,
   GRID_HEIGHT,
   GRID_WIDTH,
   SIDE_PADDING
@@ -52,7 +54,7 @@ export const Bank = createPureComponent({
             selectedTileId={selectedTileId}
             tile={({
               char: '\u00d7',
-              id: 'EXIT',
+              id: EXIT_TILE_ID,
               used: false
             })}
           />;
@@ -68,7 +70,7 @@ export const Bank = createPureComponent({
             selectedTileId={selectedTileId}
             tile={({
               char: '?',
-              id: 'HINT',
+              id: HINT_TILE_ID,
               used: !(hints && Math.floor(hints))
             })}
           />;
