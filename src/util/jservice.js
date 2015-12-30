@@ -16,6 +16,7 @@ const isQuestionValid = (bankSize, seenQuestions, question) => {
     valid = question.value &&
       question.value >= 600 &&
       question.value <= 1600 &&
+      question.value !== 1000 &&
       question.answer.length &&
       question.question.length &&
       question.invalid_count === null &&
@@ -42,12 +43,14 @@ const preprocessQuestion = question => {
   }
   const processedQuestion = Object.assign({}, question, {
     answer: stripHtmlTags(question.answer)
+      .split('/')[0]
       .replace(/\\/g, '')
       .replace(/^an? /, '')
       .replace(/\(.+\) ?/g, '')
       .trim(),
     question: stripHtmlTags(question.question)
-      .split('/')[0]
+      .replace(/\( +/g, '(')
+      .replace(/ +\)/g, ')')
       .replace(/\\/g, '')
       .replace(/, ?([^\d])/g, ', $1')
       .replace(/: ?/g, ': ')
