@@ -29,7 +29,7 @@ ReactDOM.render(
 
 /* Add global event listeners */
 
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', e => {
   const keyCode = e.which || e.keyCode || 0;
   let eventHandled = true;
   switch (keyCode) {

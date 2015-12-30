@@ -20,7 +20,7 @@ export const Guess = createPureComponent({
         )}
         onClick={onPromptClick}
       >
-        {solutionRuns && solutionRuns.map((run) => {
+        {solutionRuns && solutionRuns.map(run => {
           if (typeof run === 'string') {
             return run;
           }

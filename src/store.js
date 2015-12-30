@@ -16,7 +16,7 @@ if (DEV) {
   const logger = createLogger({
     collapsed: true,
     predicate: (getState, action) => !HIDDEN_ACTIONS.includes(action.type),
-    stateTransformer: (state) => state.toJS()
+    stateTransformer: state => state.toJS()
   });
   middleWare.push(logger);
 }

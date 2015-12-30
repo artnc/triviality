@@ -41,7 +41,7 @@ const App = React.createClass({
           solved={solved}
         />
         <Bank
-          onTileClick={(tile) => {
+          onTileClick={tile => {
             if (!tile.used && guess.length < filteredSolution.length) {
               dispatch(addTile(tile.id, tile.char));
             }
@@ -55,7 +55,7 @@ const App = React.createClass({
   }
 });
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   category: state.get('category'),
   difficulty: state.get('difficulty'),
   filteredSolution: state.get('filteredSolution'),

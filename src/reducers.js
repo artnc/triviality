@@ -32,7 +32,7 @@ const tiles = (state, action) => {
 /* Root reducer given to Redux.createStore */
 
 // Rewrite of Redux.combineReducers to support stores of type Immutable.Map
-const immutableCombineReducers = (reducers) => {
+const immutableCombineReducers = reducers => {
   const reducerKeys = Object.keys(reducers);
   return (state = Immutable.Map({}), action) => {
     return reducerKeys.reduce(
@@ -45,7 +45,7 @@ const combinedReducer = immutableCombineReducers({
   tiles
 });
 
-const persistState = (state) => {
+const persistState = state => {
   window.localStorage.challengeState = JSON.stringify(state.toJS());
 };
 

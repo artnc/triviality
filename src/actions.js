@@ -17,13 +17,13 @@ export const TILE_SELECT = 'TILE_SELECT';
 const RUN_DELIMITER = '@#"';
 
 // Converts the server's challenge format into a complete Redux state
-const loadNewChallenge = (challengeJson) => {
+const loadNewChallenge = challengeJson => {
   // Post-process challenge
   const solutionChars = challengeJson.tileString.split('');
   const solutionRuns = challengeJson.solution.trim().replace(
     /(\w+)/g,
     `${RUN_DELIMITER}$1${RUN_DELIMITER}`
-  ).split(RUN_DELIMITER).filter((run) => run.length).map((run) => (
+  ).split(RUN_DELIMITER).filter(run => run.length).map((run) => (
     run.charAt(0).match(/\w/) ? run.length : run
   ));
 
@@ -56,18 +56,18 @@ export const popHistoryState = () => ({type: HISTORY_STATE_POP});
 
 export const pushHistoryState = () => ({type: HISTORY_STATE_PUSH});
 
-export const hydrate = (hydrateState) => ({
+export const hydrate = hydrateState => ({
   state: hydrateState,
   type: HYDRATE
 });
 
-export const hydrateNewChallenge = (delay = 2000) => ((dispatch) => {
+export const hydrateNewChallenge = (delay = 2000) => (dispatch => {
   const bankSize = GRID_HEIGHT * GRID_WIDTH;
   const seenChallenges = JSON.parse(localStorage.seenChallenges || '[]');
   let waiting = !!delay;
   let hydrateState;
   const dispatchHydrate = () => dispatch(hydrate(hydrateState));
-  getChallenge(bankSize, seenChallenges, (challenge) => {
+  getChallenge(bankSize, seenChallenges, challenge => {
     hydrateState = loadNewChallenge(challenge);
     !waiting && dispatchHydrate();
   });
@@ -93,12 +93,12 @@ export const addTile = (tileId, char) => ({
   type: TILE_ADD
 });
 
-export const removeTile = (tileId) => ({
+export const removeTile = tileId => ({
   tileId,
   type: TILE_REMOVE
 });
 
-export const selectTile = (tileId) => ({
+export const selectTile = tileId => ({
   tileId,
   type: TILE_SELECT
 });

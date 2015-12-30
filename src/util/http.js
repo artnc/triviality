@@ -1,5 +1,5 @@
 const ajax = (method, url, callback, responseFormatter) => {
-  responseFormatter = responseFormatter || ((r) => r);
+  responseFormatter = responseFormatter || (r => r);
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = () => {
     if (xhr.readyState !== XMLHttpRequest.DONE) {
