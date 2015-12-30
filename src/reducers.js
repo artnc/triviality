@@ -126,11 +126,19 @@ const HISTORY_KEY = '_stateHistory';
 const rootCombinedReducer = immutableCombineReducers({
   currentQuestion
 });
+const getStateWithAwardedHints = state => {
+  if (!state.get('currentQuestion').get('solved')) {
+    return state;
+  }
+  const hintsToAward = state.get('currentQuestion').get('difficulty') / 2000;
+  return state.set('hints', state.get('hints') + hintsToAward);
+};
 const rootReducer = (state = Immutable.Map({}), action) => {
   state = rootCombinedReducer(state, action);
   switch (action.type) {
     case HINT_USE: {
       state = state.set('hints', state.get('hints') - 1);
+      state = getStateWithAwardedHints(state);
       persistState(state);
       break;
     }
@@ -158,6 +166,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
     }
     case TILE_ADD:
     case TILE_REMOVE: {
+      state = getStateWithAwardedHints(state);
       persistState(state);
       break;
     }

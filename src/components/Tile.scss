@@ -16,6 +16,11 @@ $tile-size: 6.4vmin;
   border-color: $text-color;
 }
 
-.used span {
-  opacity: 0.2;
+.used {
+  cursor: default;
+
+  span {
+    opacity: 0.2;
+  }
 }
+

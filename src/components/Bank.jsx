@@ -69,7 +69,7 @@ export const Bank = createPureComponent({
             tile={({
               char: '?',
               id: 'HINT',
-              used: !hints
+              used: !(hints && Math.floor(hints))
             })}
           />;
         }

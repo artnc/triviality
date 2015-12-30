@@ -24,7 +24,6 @@ const App = React.createClass({
     const {
       category,
       difficulty,
-      filteredSolution,
       guess,
       guessTileIds,
       prompt,
@@ -58,10 +57,10 @@ const App = React.createClass({
           hints={hints}
           onExitClick={exit}
           onHintClick={() => {
-            hints && dispatch(useHint());
+            hints && hints >= 1 && dispatch(useHint());
           }}
           onTileClick={tile => {
-            if (!tile.used && guess.length < filteredSolution.length) {
+            if (!tile.used && guess.includes(null)) {
               dispatch(addTile(tile.id, tile.char));
             }
           }}

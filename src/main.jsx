@@ -48,7 +48,6 @@ document.addEventListener('keydown', e => {
       break;
     }
     case 13: { // Enter
-      const filteredSolution = state.get('filteredSolution');
       const guess = state.get('guess');
       const selectedTileId = state.get('selectedTileId');
       switch (selectedTileId) {
@@ -57,12 +56,12 @@ document.addEventListener('keydown', e => {
           break;
         }
         case 'HINT': {
-          store.getState().get('hints', 0) && store.dispatch(useHint());
+          store.getState().get('hints', 0) >= 1 && store.dispatch(useHint());
           break;
         }
         default: {
           const tile = state.get('tiles').get(selectedTileId);
-          if (!tile.get('used') && guess.length < filteredSolution.length) {
+          if (!tile.get('used') && guess.includes(null)) {
             store.dispatch(addTile(selectedTileId, tile.get('char')));
           }
           break;

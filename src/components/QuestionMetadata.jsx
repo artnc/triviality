@@ -13,8 +13,9 @@ export const QuestionMetadata = createPureComponent({
         break;
       }
       case 'HINT': {
-        children = hints ?
-          `You have ${hints} ${hints === 1 ? 'hint' : 'hints'} left. Use one?` :
+        const h = Math.floor(hints);
+        children = h ?
+          `You have ${h} ${h === 1 ? 'hint' : 'hints'} left. Use one?` :
           'You have no hints left!';
         break;
       }
