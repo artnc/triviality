@@ -13,7 +13,8 @@ export const QuestionMetadata = createPureComponent({
         break;
       }
       case 'HINT': {
-        children = `You have ${hints} hints left. Use one?`;
+        children = hints ? `You have ${hints} hints left. Use one?` :
+          'You have no hints left!';
         break;
       }
       default: {

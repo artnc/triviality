@@ -13,6 +13,7 @@ import {Tile} from './Tile';
 export const Bank = createPureComponent({
   render() {
     const {
+      hints,
       onExitClick,
       onHintClick,
       onTileClick,
@@ -68,7 +69,7 @@ export const Bank = createPureComponent({
             tile={({
               char: '?',
               id: 'HINT',
-              used: false
+              used: hints
             })}
           />;
         }

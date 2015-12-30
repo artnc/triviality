@@ -49,6 +49,7 @@ const App = React.createClass({
           solved={solved}
         />
         <Bank
+          hints={hints}
           onExitClick={exit}
           onHintClick={() => {
             console.log('dispensing some hint');
