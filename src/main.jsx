@@ -32,14 +32,16 @@ ReactDOM.render(
 document.addEventListener('keydown', e => {
   const keyCode = e.which || e.keyCode || 0;
   let eventHandled = true;
+  const state = store.getState();
   switch (keyCode) {
     case 8: { // Backspace
-      const guessTileIds = store.getState().get('guessTileIds');
-      guessTileIds.size && store.dispatch(removeTile(guessTileIds.last()));
+      const guessTileIds = state.get('guessTileIds');
+      if (!state.get('solved') && guessTileIds.size) {
+        store.dispatch(removeTile(guessTileIds.last()));
+      }
       break;
     }
     case 13: { // Enter
-      const state = store.getState();
       const filteredSolution = state.get('filteredSolution');
       const guess = state.get('guess');
       const selectedTileId = state.get('selectedTileId');
@@ -53,7 +55,6 @@ document.addEventListener('keydown', e => {
     case 38: // Up
     case 39: // Right
     case 40: { // Down
-      const state = store.getState();
       const selectedTileId = state.get('selectedTileId');
 
       // Get current tile position
@@ -79,7 +80,6 @@ document.addEventListener('keydown', e => {
 
       // Alphanumeric
       const char = String.fromCharCode(keyCode);
-      const state = store.getState();
       const filteredSolution = state.get('filteredSolution');
       const guess = state.get('guess');
       if (!state.get('tileString').includes(char) ||
