@@ -30,7 +30,11 @@ const stripHtmlTags = (html) => {
   return node.textContent || node.innerText || '';
 };
 
+const DOUBLED_PRICES_AIRDATE = '2001-11-26T12:00:00.000Z';
 const preprocessChallenge = (challenge) => {
+  if (challenge.airdate < DOUBLED_PRICES_AIRDATE) {
+    challenge.value *= 2;
+  }
   const processedChallenge = Object.assign({}, challenge, {
     answer: stripHtmlTags(challenge.answer)
       .replace(/\\/g, '')
