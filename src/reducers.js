@@ -9,6 +9,19 @@ import {
   hydrate
 } from './actions';
 
+/* Reducer utils */
+
+// Rewrite of Redux.combineReducers to support stores of type Immutable.Map
+const immutableCombineReducers = reducers => {
+  const reducerKeys = Object.keys(reducers);
+  return (state = Immutable.Map({}), action) => {
+    return reducerKeys.reduce(
+      (next, key) => next.set(key, reducers[key](state.get(key), action)),
+      state
+    );
+  };
+};
+
 /* Substate reducers */
 
 const tile = (state, action) => {
@@ -29,24 +42,49 @@ const tiles = (state, action) => {
   return state;
 };
 
-/* Root reducer given to Redux.createStore */
-
-// Rewrite of Redux.combineReducers to support stores of type Immutable.Map
-const immutableCombineReducers = reducers => {
-  const reducerKeys = Object.keys(reducers);
-  return (state = Immutable.Map({}), action) => {
-    return reducerKeys.reduce(
-      (next, key) => next.set(key, reducers[key](state.get(key), action)),
-      state
-    );
-  };
-};
-const combinedReducer = immutableCombineReducers({
+const currenQuestionCombinedReducer = immutableCombineReducers({
   tiles
 });
+const currentQuestion = (state, action) => {
+  state = currenQuestionCombinedReducer(state, action);
+  switch (action.type) {
+    case TILE_ADD: {
+      const guess = `${state.get('guess')}${action.char}`;
+      state = state.merge({
+        guess,
+        guessTileIds: state.get('guessTileIds').push(action.tileId),
+        selectedTileId: action.tileId
+      });
+      if (guess === state.get('filteredSolution')) {
+        state = state.set('solved', true);
+      }
+      break;
+    }
+    case TILE_REMOVE: {
+      const guessTileIds = state.get('guessTileIds');
+      if (state.get('solved') || !guessTileIds.size) {
+        break;
+      }
+      state = state.merge({
+        guess: state.get('guess').slice(0, -1),
+        guessTileIds: guessTileIds.pop()
+      });
+      break;
+    }
+    case TILE_SELECT: {
+      if (!state.get('solved')) {
+        state = state.set('selectedTileId', action.tileId);
+      }
+      break;
+    }
+  }
+  return state;
+};
+
+/* Root reducer given to Redux.createStore */
 
 const persistState = state => {
-  window.localStorage.questionState = JSON.stringify(state.toJS());
+  window.localStorage.state = JSON.stringify(state.toJS());
 };
 
 // Undo history is implemented using a stack of states stored in the HISTORY_KEY
@@ -55,8 +93,11 @@ const persistState = state => {
 // popped from HISTORY_KEY with the resulting value of HISTORY_KEY merged back
 // in. The store is then hydrated with the popped (i.e. previous) state.
 const HISTORY_KEY = '_stateHistory';
+const rootCombinedReducer = immutableCombineReducers({
+  currentQuestion
+});
 const rootReducer = (state = Immutable.Map({}), action) => {
-  state = combinedReducer(state, action);
+  state = rootCombinedReducer(state, action);
   switch (action.type) {
     case HISTORY_STATE_POP: {
       const history = state.get(HISTORY_KEY);
@@ -74,39 +115,15 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       break;
     }
     case HYDRATE: {
-      state = rootReducer(action.state, {});
+      const hydrateState = action.partial ? state.merge(action.state) :
+        action.state;
+      state = rootReducer(hydrateState, {});
       persistState(state);
       break;
     }
-    case TILE_ADD: {
-      const guess = `${state.get('guess')}${action.char}`;
-      state = state.merge({
-        guess,
-        guessTileIds: state.get('guessTileIds').push(action.tileId),
-        selectedTileId: action.tileId
-      });
-      if (guess === state.get('filteredSolution')) {
-        state = state.set('solved', true);
-      }
-      persistState(state);
-      break;
-    }
+    case TILE_ADD:
     case TILE_REMOVE: {
-      const guessTileIds = state.get('guessTileIds');
-      if (state.get('solved') || !guessTileIds.size) {
-        break;
-      }
-      state = state.merge({
-        guess: state.get('guess').slice(0, -1),
-        guessTileIds: guessTileIds.pop()
-      });
       persistState(state);
-      break;
-    }
-    case TILE_SELECT: {
-      if (!state.get('solved')) {
-        state = state.set('selectedTileId', action.tileId);
-      }
       break;
     }
   }

@@ -56,35 +56,46 @@ export const popHistoryState = () => ({type: HISTORY_STATE_POP});
 
 export const pushHistoryState = () => ({type: HISTORY_STATE_PUSH});
 
-export const hydrate = hydrateState => ({
+export const hydrate = (hydrateState, partial = false) => ({
+  partial,
   state: hydrateState,
   type: HYDRATE
 });
 
-export const hydrateNewQuestion = (delay = 2000) => (dispatch => {
+const INITIAL_STATE = {
+  hints: 5
+};
+export const hydrateNewQuestion = initStateForNewUser => (dispatch => {
+  const delay = initStateForNewUser ? 0 : 2000;
   const bankSize = GRID_HEIGHT * GRID_WIDTH;
   const seenQuestions = JSON.parse(localStorage.seenQuestions || '[]');
   let waiting = !!delay;
-  let hydrateState;
-  const dispatchHydrate = () => dispatch(hydrate(hydrateState));
+  let currentQuestion;
+  const dispatchHydrate = () => {
+    let hydrateState = Immutable.fromJS({currentQuestion});
+    if (initStateForNewUser) {
+      hydrateState = hydrateState.merge(INITIAL_STATE);
+    }
+    return dispatch(hydrate(hydrateState, true));
+  };
   getQuestion(bankSize, seenQuestions, question => {
-    hydrateState = loadNewQuestion(question);
+    currentQuestion = loadNewQuestion(question);
     !waiting && dispatchHydrate();
   });
   delay && window.setTimeout(() => {
-    if (hydrateState) {
+    if (currentQuestion) {
       dispatchHydrate();
     } else {
       waiting = false;
     }
   }, delay);
 });
-export const initializeQuestionState = () => {
-  const questionState = window.localStorage.questionState;
-  if (typeof questionState === 'string') {
-    return hydrate(Immutable.fromJS(JSON.parse(questionState)));
+export const initState = () => {
+  const savedState = window.localStorage.state;
+  if (typeof savedState === 'string') {
+    return hydrate(Immutable.fromJS(JSON.parse(savedState)));
   }
-  return hydrateNewQuestion(0);
+  return hydrateNewQuestion(true);
 };
 
 export const addTile = (tileId, char) => ({

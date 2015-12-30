@@ -10,9 +10,13 @@ import styles from '../containers/App.scss';
 const App = React.createClass({
   render() {
     const {
+      currentQuestion,
+      dispatch
+    } = this.props;
+
+    const {
       category,
       difficulty,
-      dispatch,
       filteredSolution,
       guess,
       guessTileIds,
@@ -21,9 +25,9 @@ const App = React.createClass({
       solutionRuns,
       solved,
       tiles
-    } = this.props;
+    } = currentQuestion ? currentQuestion.toObject() : {};
 
-    solved && dispatch(hydrateNewQuestion());
+    solved && dispatch(hydrateNewQuestion(false));
 
     return (
       <div className={styles.app}>
@@ -56,15 +60,6 @@ const App = React.createClass({
 });
 
 const mapStateToProps = state => ({
-  category: state.get('category'),
-  difficulty: state.get('difficulty'),
-  filteredSolution: state.get('filteredSolution'),
-  guess: state.get('guess'),
-  guessTileIds: state.get('guessTileIds'),
-  prompt: state.get('prompt'),
-  selectedTileId: state.get('selectedTileId'),
-  solutionRuns: state.get('solutionRuns'),
-  solved: state.get('solved'),
-  tiles: state.get('tiles')
+  currentQuestion: state.get('currentQuestion')
 });
 export default connect(mapStateToProps)(App);

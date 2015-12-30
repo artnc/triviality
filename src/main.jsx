@@ -1,9 +1,10 @@
+import Immutable from 'immutable';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import {
   addTile,
-  initializeQuestionState,
+  initState,
   removeTile,
   selectTile
 } from './actions';
@@ -16,7 +17,7 @@ import './styles/global.scss';
 /* Initialize Redux */
 
 const store = createStoreWithMiddleware(rootReducer);
-store.dispatch(initializeQuestionState());
+store.dispatch(initState());
 
 /* Initialize React */
 
@@ -32,7 +33,7 @@ ReactDOM.render(
 document.addEventListener('keydown', e => {
   const keyCode = e.which || e.keyCode || 0;
   let eventHandled = true;
-  const state = store.getState();
+  const state = store.getState().get('currentQuestion', Immutable.Map({}));
   switch (keyCode) {
     case 8: { // Backspace
       const guessTileIds = state.get('guessTileIds');
