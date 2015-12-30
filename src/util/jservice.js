@@ -5,12 +5,13 @@ const BAD_STRINGS = [
   'heard here',
   'seen here'
 ];
-const ALLOWED_CLUE_VALUES = [400, 600, 800, 1200, 1600];
 const isChallengeValid = (bankSize, seenChallenges, challenge) => {
   const lowercasedClueText = challenge.question.toLowerCase();
   let valid;
   try {
-    valid = ALLOWED_CLUE_VALUES.includes(challenge.value) &&
+    valid = challenge.value &&
+      challenge.value >= 600 &&
+      challenge.value <= 1200 &&
       challenge.answer.length &&
       challenge.question.length &&
       challenge.invalid_count === null &&
