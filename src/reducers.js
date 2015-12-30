@@ -130,7 +130,7 @@ const getStateWithAwardedHints = state => {
   if (!state.get('currentQuestion').get('solved')) {
     return state;
   }
-  const hintsToAward = state.get('currentQuestion').get('difficulty') / 3000;
+  const hintsToAward = state.get('currentQuestion').get('difficulty') / 2000;
   return state.set('hints', state.get('hints') + hintsToAward);
 };
 const rootReducer = (state = Immutable.Map({}), action) => {

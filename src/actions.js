@@ -67,7 +67,7 @@ export const hydrate = (hydrateState, partial = false) => ({
 });
 
 const INITIAL_STATE = {
-  hints: 5
+  hints: 10
 };
 export const hydrateNewQuestion = initStateForNewUser => (dispatch => {
   const delay = initStateForNewUser ? 0 : 3000;
