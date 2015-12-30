@@ -62,8 +62,9 @@ export default {
   plugins: [
     ...envConfig.plugins,
     new webpack.DefinePlugin({
-      DEV: !PROD,
-      PROD
+      __DEV__: !PROD,
+      __LOG_STATES__: false,
+      __PROD__: PROD
     }),
     new ExtractTextPlugin('trivia.css')
   ],

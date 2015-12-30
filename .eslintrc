@@ -9,8 +9,9 @@
   },
   "extends": "eslint:recommended",
   "globals": {
-    "DEV": false,
-    "PROD": false
+    "__DEV__": false,
+    "__LOG_STATES__": false,
+    "__PROD__": false
   },
   "parser": "babel-eslint",
   "plugins": [

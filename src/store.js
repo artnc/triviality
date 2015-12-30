@@ -5,7 +5,7 @@ import {TILE_SELECT} from './actions';
 
 const middleWare = [thunk];
 
-if (DEV) {
+if (__LOG_STATES__) {
   const HIDDEN_ACTIONS = [
     TILE_SELECT
   ];
@@ -13,12 +13,11 @@ if (DEV) {
     `%caction logging disabled for: ${HIDDEN_ACTIONS.join(', ')}`,
     'font-weight:700'
   );
-  const logger = createLogger({
+  middleWare.push(createLogger({
     collapsed: true,
     predicate: (getState, action) => !HIDDEN_ACTIONS.includes(action.type),
     stateTransformer: state => state.toJS()
-  });
-  middleWare.push(logger);
+  }));
 }
 
 const createStoreWithMiddleware = applyMiddleware(...middleWare)(createStore);
