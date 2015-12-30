@@ -15,8 +15,7 @@ const isQuestionValid = (bankSize, seenQuestions, question) => {
   try {
     valid = question.value &&
       question.value >= 600 &&
-      question.value <= 1200 &&
-      question.value !== 1000 &&
+      question.value <= 1600 &&
       question.answer.length &&
       question.question.length &&
       question.invalid_count === null &&
@@ -48,9 +47,11 @@ const preprocessQuestion = question => {
       .replace(/\(.+\) ?/g, '')
       .trim(),
     question: stripHtmlTags(question.question)
+      .split('/')[0]
       .replace(/\\/g, '')
       .replace(/, ?([^\d])/g, ', $1')
       .replace(/: ?/g, ': ')
+      .replace(/ -- /g, '\u2014')
       .replace(/ ?& ?/g, ' and ')
       .trim()
   });
@@ -98,7 +99,6 @@ const postprocessQuestion = (bankSize, question) => {
 };
 
 export const getQuestion = (bankSize, seenQuestions, callback) => {
-  console.log('Calling jService API...');
   const retry = () => window.setTimeout(() => (
     getQuestion(bankSize, seenQuestions, callback)
   ), 125);
@@ -111,13 +111,12 @@ export const getQuestion = (bankSize, seenQuestions, callback) => {
     const question = preprocessQuestion(data[0]);
     if (!isQuestionValid(bankSize, seenQuestions, question)) {
       console.log(
-        'Call to jService API returned bad data. Retry scheduled.',
+        'Call to jService API returned invalid data. Retry scheduled.',
         question
       );
       retry();
       return;
     }
-    console.log('Call to jService API succeeded.');
     callback(postprocessQuestion(bankSize, question));
   });
 };

@@ -9,9 +9,9 @@ export const QuestionMetadata = createPureComponent({
       <p className={styles['question-metadata']}>
         <span className={styles.bold}>{category}</span>
         <span className={styles.for}>
-          {category ? '\u00a0\u00a0for\u00a0\u00a0' : ''}
+          &nbsp;&nbsp;{category && 'for'}&nbsp;&nbsp;
         </span>
-        <span className={styles.bold}>${difficulty}</span>
+        <span className={styles.bold}>{difficulty && `$${difficulty}`}</span>
       </p>
     );
   }
