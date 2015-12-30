@@ -6,6 +6,7 @@ import {Guess} from '../components/Guess';
 import {Prompt} from '../components/Prompt';
 import {QuestionMetadata} from '../components/QuestionMetadata';
 import styles from '../containers/App.scss';
+import {exit} from '../util/navigation';
 
 const App = React.createClass({
   render() {
@@ -45,13 +46,7 @@ const App = React.createClass({
           solved={solved}
         />
         <Bank
-          onExitClick={() => {
-            if (window.tvMode) {
-              window.open('', '_self').close();
-            } else {
-              window.location.href = 'https://chaidarun.com/';
-            }
-          }}
+          onExitClick={exit}
           onHintClick={() => {
             console.log('dispensing some hint');
           }}

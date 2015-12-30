@@ -13,6 +13,7 @@ import App from './containers/App';
 import rootReducer from './reducers';
 import createStoreWithMiddleware from './store';
 import './styles/global.scss';
+import {exit} from './util/navigation';
 
 /* Initialize Redux */
 
@@ -48,7 +49,7 @@ document.addEventListener('keydown', e => {
       const selectedTileId = state.get('selectedTileId');
       switch (selectedTileId) {
         case 'EXIT': {
-          console.log('exiting');
+          exit();
           break;
         }
         case 'HINT': {
