@@ -14,7 +14,7 @@ export const Guess = createPureComponent({
         className={classNames(
           styles.guess,
           {
-            [styles.populated]: guess && guess.length,
+            [styles.populated]: guess && guess.size,
             [styles.solved]: solved
           }
         )}
@@ -28,7 +28,7 @@ export const Guess = createPureComponent({
           const slotGroup = [];
           for (let i = 0; i < run; ++i) {
             slotGroup.push(
-              <Slot>{guess[slotGroupPosition + i] || '\u00a0'}</Slot>
+              <Slot>{guess.get(slotGroupPosition + i) || '\u00a0'}</Slot>
             );
           }
 

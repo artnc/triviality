@@ -1,6 +1,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addTile, hydrateNewQuestion, removeTile} from '../actions';
+import {
+  addTile,
+  hydrateNewQuestion,
+  removeTile,
+  useHint
+} from '../actions';
 import {Bank} from '../components/Bank';
 import {Guess} from '../components/Guess';
 import {Prompt} from '../components/Prompt';
@@ -52,7 +57,7 @@ const App = React.createClass({
           hints={hints}
           onExitClick={exit}
           onHintClick={() => {
-            console.log('dispensing some hint');
+            hints && dispatch(useHint());
           }}
           onTileClick={tile => {
             if (!tile.used && guess.length < filteredSolution.length) {

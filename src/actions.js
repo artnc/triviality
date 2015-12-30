@@ -4,6 +4,7 @@ import {getQuestion} from './util/jservice';
 
 /* Action types */
 
+export const HINT_USE = 'HINT_USE';
 export const HISTORY_STATE_POP = 'HISTORY_STATE_POP';
 export const HISTORY_STATE_PUSH = 'HISTORY_STATE_PUSH';
 export const HYDRATE = 'HYDRATE';
@@ -26,6 +27,7 @@ const loadNewQuestion = questionJson => {
   ).split(RUN_DELIMITER).filter(run => run.length).map((run) => (
     run.charAt(0).match(/\w/) ? run.length : run
   ));
+  const filteredSolution = questionJson.solution.replace(/[^\w]/g, '');
 
   // Mark question as seen
   const seenQuestions = JSON.parse(localStorage.seenQuestions || '[]');
@@ -37,9 +39,9 @@ const loadNewQuestion = questionJson => {
   return Immutable.fromJS({
     category: questionJson.category,
     difficulty: questionJson.difficulty,
-    filteredSolution: questionJson.solution.replace(/[^\w]/g, ''),
-    guess: '',
-    guessTileIds: [],
+    filteredSolution,
+    guess: (new Array(filteredSolution.length)).fill(null),
+    guessTileIds: (new Array(filteredSolution.length)).fill(null),
     id: questionJson.id,
     prompt: questionJson.prompt,
     selectedTileId: 0,
@@ -52,6 +54,8 @@ const loadNewQuestion = questionJson => {
 
 /* Action creators */
 
+export const useHint = () => ({type: HINT_USE});
+
 export const popHistoryState = () => ({type: HISTORY_STATE_POP});
 
 export const pushHistoryState = () => ({type: HISTORY_STATE_PUSH});
@@ -63,7 +67,7 @@ export const hydrate = (hydrateState, partial = false) => ({
 });
 
 const INITIAL_STATE = {
-  hints: 5
+  hints: 599
 };
 export const hydrateNewQuestion = initStateForNewUser => (dispatch => {
   const delay = initStateForNewUser ? 0 : 2000;

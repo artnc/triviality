@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import {
+  HINT_USE,
   HISTORY_STATE_POP,
   HISTORY_STATE_PUSH,
   HYDRATE,
@@ -42,32 +43,60 @@ const tiles = (state, action) => {
   return state;
 };
 
+const isSolved = (guess, state) => (
+  guess.join('') === state.get('filteredSolution')
+);
 const currenQuestionCombinedReducer = immutableCombineReducers({
   tiles
 });
 const currentQuestion = (state, action) => {
   state = currenQuestionCombinedReducer(state, action);
   switch (action.type) {
-    case TILE_ADD: {
-      const guess = `${state.get('guess')}${action.char}`;
+    case HINT_USE: {
+      const hintIndexPool = [];
+      const guessTileIds = state.get('guessTileIds');
+      guessTileIds.toJS().forEach((id, i) => {
+        (typeof id !== 'string') && hintIndexPool.push(i);
+      });
+      const hintIndex = hintIndexPool[Math.floor(Math.random() *
+        hintIndexPool.length)];
+      const hintChar = state.get('filteredSolution')[hintIndex];
+      const hintTile = state.get('tiles').find(t => (
+        t.get('char') === hintChar
+      ));
+      const guess = state.get('guess').set(hintIndex, hintChar);
       state = state.merge({
         guess,
-        guessTileIds: state.get('guessTileIds').push(action.tileId),
+        guessTileIds: guessTileIds.set(hintIndex, hintChar),
+        tiles: state.get('tiles').set(hintTile.id, hintTile.merge({
+          used: true
+        }))
+      });
+      state = state.set('solved', isSolved(guess, state));
+      break;
+    }
+    case TILE_ADD: {
+      const addIndex = state.get('guess').indexOf(null);
+      const guess = state.get('guess').set(addIndex, action.char);
+      state = state.merge({
+        guess,
+        guessTileIds: state.get('guessTileIds').set(addIndex, action.tileId),
         selectedTileId: action.tileId
       });
-      if (guess === state.get('filteredSolution')) {
-        state = state.set('solved', true);
-      }
+      state = state.set('solved', isSolved(guess, state));
       break;
     }
     case TILE_REMOVE: {
       const guessTileIds = state.get('guessTileIds');
-      if (state.get('solved') || !guessTileIds.size) {
+      const removeIndex = guessTileIds.findLastIndex((id) => (
+        typeof id === 'number'
+      ));
+      if (state.get('solved') || removeIndex === -1) {
         break;
       }
       state = state.merge({
-        guess: state.get('guess').slice(0, -1),
-        guessTileIds: guessTileIds.pop()
+        guess: state.get('guess').set(removeIndex, null),
+        guessTileIds: guessTileIds.set(removeIndex, null)
       });
       break;
     }
@@ -99,6 +128,11 @@ const rootCombinedReducer = immutableCombineReducers({
 const rootReducer = (state = Immutable.Map({}), action) => {
   state = rootCombinedReducer(state, action);
   switch (action.type) {
+    case HINT_USE: {
+      state = state.set('hints', state.get('hints') - 1);
+      persistState(state);
+      break;
+    }
     case HISTORY_STATE_POP: {
       const history = state.get(HISTORY_KEY);
       if (!(history && history.size)) {

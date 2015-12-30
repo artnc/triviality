@@ -6,7 +6,8 @@ import {
   addTile,
   initState,
   removeTile,
-  selectTile
+  selectTile,
+  useHint
 } from './actions';
 import {BANK_EXTRAS_ROW, GRID_HEIGHT, GRID_WIDTH} from './constants';
 import App from './containers/App';
@@ -38,8 +39,11 @@ document.addEventListener('keydown', e => {
   switch (keyCode) {
     case 8: { // Backspace
       const guessTileIds = state.get('guessTileIds');
-      if (!state.get('solved') && guessTileIds.size) {
-        store.dispatch(removeTile(guessTileIds.last()));
+      const removeIndex = guessTileIds.findLastIndex((id) => (
+        typeof id === 'number'
+      ));
+      if (!state.get('solved') && removeIndex !== -1) {
+        store.dispatch(removeTile(guessTileIds.get(removeIndex)));
       }
       break;
     }
@@ -53,7 +57,7 @@ document.addEventListener('keydown', e => {
           break;
         }
         case 'HINT': {
-          console.log('using hint');
+          store.getState().get('hints', 0) && store.dispatch(useHint());
           break;
         }
         default: {
@@ -120,10 +124,8 @@ document.addEventListener('keydown', e => {
 
       // Alphanumeric
       const char = String.fromCharCode(keyCode);
-      const filteredSolution = state.get('filteredSolution');
-      const guess = state.get('guess');
-      if (!state.get('tileString').includes(char) ||
-        guess.length >= filteredSolution.length) {
+      if (!(state.get('tileString').includes(char) &&
+        state.get('guess').includes(null))) {
         break;
       }
       state.get('tiles').toJS().some((tile, id) => {
