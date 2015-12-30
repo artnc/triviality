@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import {connect} from 'react-redux';
 import {
@@ -36,7 +37,14 @@ const App = React.createClass({
     solved && dispatch(hydrateNewQuestion(false));
 
     return (
-      <div className={styles.app}>
+      <div
+        className={classNames(
+          styles.app,
+          {
+            [styles.hidden]: !category
+          }
+        )}
+      >
         <QuestionMetadata
           category={category}
           difficulty={difficulty}

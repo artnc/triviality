@@ -27,11 +27,9 @@ export const QuestionMetadata = createPureComponent({
           children = [
             <span key={0} className={styles.bold}>{category}</span>,
             <span key={1} className={styles.for}>
-              &nbsp;&nbsp;{category && 'for'}&nbsp;&nbsp;
+              &nbsp;&nbsp;for&nbsp;&nbsp;
             </span>,
-            <span key={2} className={styles.bold}>
-              {difficulty && `$${difficulty}`}
-            </span>
+            <span key={2} className={styles.bold}>${difficulty}</span>
           ];
           break;
         }
