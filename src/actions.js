@@ -70,13 +70,21 @@ export const hydrate = (hydrateState) => ({
 export const hydrateNewChallenge = () => ((dispatch) => {
   const bankSize = GRID_HEIGHT * GRID_WIDTH;
   const seenChallenges = JSON.parse(localStorage.seenChallenges || '[]');
+  let waiting = true;
+  let hydrateState;
+  const dispatchHydrate = () => dispatch(hydrate(hydrateState));
   getChallenge(bankSize, seenChallenges, (challenge) => {
-    const hydrateState = loadNewChallenge(challenge);
+    hydrateState = loadNewChallenge(challenge);
     console.log(hydrateState.toJS());
-    window.setTimeout(() => (
-      dispatch(hydrate(hydrateState))
-    ), 2000);
+    !waiting && dispatchHydrate();
   });
+  window.setTimeout(() => {
+    if (hydrateState) {
+      dispatchHydrate();
+    } else {
+      waiting = false;
+    }
+  }, 2000);
 });
 
 export const addTile = (tileId, char) => ({
