@@ -1,11 +1,15 @@
 import http from './http';
 
 const BAD_STRINGS = [
+  '(cheryl ',
   '(i\m ',
   '(jimmy ',
+  '(jon ',
   '(kelly ',
   '(sarah ',
+  '(sofia ',
   'clue crew',
+  'following clip',
   'heard here',
   'seen here'
 ];
