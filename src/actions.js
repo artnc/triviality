@@ -1,6 +1,8 @@
+
 import Immutable from 'immutable';
-import {GRID_HEIGHT, GRID_WIDTH} from './constants';
-import {getQuestion} from './util/jservice';
+
+import {GRID_HEIGHT, GRID_WIDTH} from 'constants';
+import {getQuestion} from 'util/jservice';
 
 /* Action types */
 

@@ -57,7 +57,11 @@ export default {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['', '.jsx', '.js', '.scss']
+    extensions: ['', '.jsx', '.js', '.scss'],
+    root: [
+      `${__dirname}/src`,
+      `${__dirname}/node_modules`
+    ]
   },
   plugins: [
     ...envConfig.plugins,

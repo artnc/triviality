@@ -2,25 +2,26 @@ import Immutable from 'immutable';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
+
 import {
   addTile,
   initState,
   removeTile,
   selectTile,
   useHint
-} from './actions';
+} from 'actions';
 import {
   BANK_EXTRAS_ROW,
   EXIT_TILE_ID,
   HINT_TILE_ID,
   GRID_HEIGHT,
   GRID_WIDTH
-} from './constants';
-import App from './containers/App';
-import rootReducer from './reducers';
-import createStoreWithMiddleware from './store';
-import './styles/global.scss';
-import {exit} from './util/navigation';
+} from 'constants';
+import App from 'containers/App';
+import rootReducer from 'reducers';
+import createStoreWithMiddleware from 'store';
+import 'styles/global.scss';
+import {exit} from 'util/navigation';
 
 /* Initialize Redux */
 

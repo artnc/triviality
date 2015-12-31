@@ -1,7 +1,8 @@
 import {applyMiddleware, createStore} from 'redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
-import {TILE_SELECT} from './actions';
+
+import {TILE_SELECT} from 'actions';
 
 const middleWare = [thunk];
 

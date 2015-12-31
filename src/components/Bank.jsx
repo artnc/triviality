@@ -1,5 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
+
+import styles from 'components/Bank.scss';
+import {Tile} from 'components/Tile';
 import {
   BANK_EXTRAS_ROW,
   EXIT_TILE_ID,
@@ -7,10 +10,8 @@ import {
   GRID_HEIGHT,
   GRID_WIDTH,
   SIDE_PADDING
-} from '../constants';
-import {createPureComponent} from '../util/react';
-import styles from './Bank.scss';
-import {Tile} from './Tile';
+} from 'constants';
+import {createPureComponent} from 'util/react';
 
 export const Bank = createPureComponent({
   render() {

@@ -1,8 +1,9 @@
 import classNames from 'classnames';
 import React from 'react';
-import styles from '../components/Guess.scss';
-import {Slot} from '../components/Slot';
-import {createPureComponent} from '../util/react';
+
+import styles from 'components/Guess.scss';
+import {Slot} from 'components/Slot';
+import {createPureComponent} from 'util/react';
 
 export const Guess = createPureComponent({
   render() {

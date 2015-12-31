@@ -1,4 +1,4 @@
-import http from './http';
+import http from 'util/http';
 
 const BAD_STRINGS = [
   '(cheryl ',

@@ -1,6 +1,7 @@
 import React from 'react';
-import {createPureComponent} from '../util/react';
-import styles from '../components/Prompt.scss';
+
+import styles from 'components/Prompt.scss';
+import {createPureComponent} from 'util/react';
 
 export const Prompt = createPureComponent({
   render() {

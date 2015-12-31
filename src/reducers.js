@@ -1,12 +1,13 @@
 import Immutable from 'immutable';
+
 import {
   HINT_USE,
   HYDRATE,
   TILE_ADD,
   TILE_REMOVE,
   TILE_SELECT
-} from './actions';
-import {SOUNDS, playSound} from './util/audio';
+} from 'actions';
+import {SOUNDS, playSound} from 'util/audio';
 
 /* Reducer utils */
 
