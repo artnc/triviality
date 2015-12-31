@@ -23,24 +23,6 @@ const immutableCombineReducers = reducers => {
 
 /* Substate reducers */
 
-const tile = (state, action) => {
-  switch (action.type) {
-    case TILE_ADD:
-      return state.set('used', true);
-    case TILE_REMOVE:
-      return state.set('used', false);
-    default:
-      return state;
-  }
-};
-
-const tiles = (state, action) => {
-  if ('tileId' in action) {
-    return state.set(action.tileId, tile(state.get(action.tileId), action));
-  }
-  return state;
-};
-
 const isSolved = (guess, state) => (
   guess.join('') === state.get('filteredSolution')
 );
@@ -53,57 +35,44 @@ const playNewTileSound = (state, defaultSound) => {
     playSound(SOUNDS.ERROR);
   }
 };
-const currenQuestionCombinedReducer = immutableCombineReducers({
-  tiles
-});
 const currentQuestion = (state, action) => {
-  state = currenQuestionCombinedReducer(state, action);
   switch (action.type) {
-    case HINT_USE: {
-      const hintIndexPool = [];
-      const guessTileIds = state.get('guessTileIds');
-      guessTileIds.toJS().forEach((id, i) => {
-        (typeof id !== 'string') && hintIndexPool.push(i);
-      });
-      const hintIndex = hintIndexPool[Math.floor(Math.random() *
-        hintIndexPool.length)];
-      const hintChar = state.get('filteredSolution')[hintIndex];
-      const hintTile = state.get('tiles').find(t => (
-        t.get('char') === hintChar
-      ));
-      const guess = state.get('guess').set(hintIndex, hintChar);
-      state = state.merge({
-        guess,
-        guessTileIds: guessTileIds.set(hintIndex, hintChar),
-        tiles: state.get('tiles').set(hintTile.get('id'), hintTile.merge({
-          solved: true,
-          used: true
-        }))
-      });
-      state = state.set('solved', isSolved(guess, state));
-      playNewTileSound(state, SOUNDS.HINT);
-      break;
-    }
     case TILE_ADD: {
+      // Validate action
+      const tileUsedKeyPath = ['tiles', action.tileId, 'used'];
+      if (state.getIn(tileUsedKeyPath) || !state.get('guess').includes(null)) {
+        break;
+      }
+
+      // Mark tile used
+      state = state.setIn(tileUsedKeyPath, true);
       const addIndex = state.get('guess').indexOf(null);
-      const guess = state.get('guess').set(addIndex, action.char);
+      const tileChar = state.getIn(['tiles', action.tileId, 'char']);
+      const guess = state.get('guess').set(addIndex, tileChar);
       state = state.merge({
         guess,
         guessTileIds: state.get('guessTileIds').set(addIndex, action.tileId),
         selectedTileId: action.tileId
       });
+
+      // Check whether solved
       state = state.set('solved', isSolved(guess, state));
       playNewTileSound(state, SOUNDS.LETTER);
       break;
     }
     case TILE_REMOVE: {
-      const guessTileIds = state.get('guessTileIds');
-      const removeIndex = guessTileIds.findLastIndex((id) => (
+      // Validate action
+      const guessTileIds = state.get('guessTileIds', Immutable.List([]));
+      const removeIndex = guessTileIds.findLastIndex(id => (
         typeof id === 'number'
       ));
       if (state.get('solved') || removeIndex === -1) {
         break;
       }
+
+      // Mark tile unused
+      const tileUsedKeyPath = ['tiles', guessTileIds.get(removeIndex), 'used'];
+      state = state.setIn(tileUsedKeyPath, false);
       state = state.merge({
         guess: state.get('guess').set(removeIndex, null),
         guessTileIds: guessTileIds.set(removeIndex, null)
@@ -112,10 +81,13 @@ const currentQuestion = (state, action) => {
       break;
     }
     case TILE_SELECT: {
+      // Validate action
       const tileId = action.tileId;
       if (state.get('solved') || tileId === state.get('selectedTileId')) {
         break;
       }
+
+      // Select tile
       state = state.set('selectedTileId', tileId);
       playSound(SOUNDS.BUTTON);
       break;
@@ -130,10 +102,12 @@ const rootCombinedReducer = immutableCombineReducers({
   currentQuestion
 });
 const getStateWithAwardedHints = state => {
-  if (!state.get('currentQuestion').get('solved')) {
+  if (!state.getIn(['currentQuestion', 'solved'], false) ||
+    state.getIn(['currentQuestion', 'hintsAwarded'], false)) {
     return state;
   }
-  const hintsToAward = state.get('currentQuestion').get('difficulty') / 1600;
+  const hintsToAward = state.getIn(['currentQuestion', 'difficulty']) / 1600;
+  state = state.setIn(['currentQuestion', 'hintsAwarded'], true);
   return state.set('hints', state.get('hints') + hintsToAward);
 };
 const rootReducer = (state = Immutable.Map({}), action) => {
@@ -141,8 +115,40 @@ const rootReducer = (state = Immutable.Map({}), action) => {
   let persistState = false;
   switch (action.type) {
     case HINT_USE: {
-      state = state.set('hints', state.get('hints') - 1);
-      state = getStateWithAwardedHints(state);
+      // Validate action
+      const hints = state.get('hints', 0);
+      if (hints < 1 || state.get('solved', false)) {
+        break;
+      }
+
+      // Consume hint
+      state = state.set('hints', hints - 1);
+      let question = state.get('currentQuestion');
+      const hintIndexPool = [];
+      const guessTileIds = question.get('guessTileIds');
+      guessTileIds.toJS().forEach((id, i) => {
+        (typeof id !== 'string') && hintIndexPool.push(i);
+      });
+      const hintIndex = hintIndexPool[Math.floor(Math.random() *
+        hintIndexPool.length)];
+      const hintChar = question.get('filteredSolution')[hintIndex];
+      const hintTile = question.get('tiles').find(t => (
+        t.get('char') === hintChar
+      ));
+      const guess = question.get('guess').set(hintIndex, hintChar);
+      question = question.merge({
+        guess,
+        guessTileIds: guessTileIds.set(hintIndex, hintChar),
+        tiles: question.get('tiles').set(hintTile.get('id'), hintTile.merge({
+          solved: true,
+          used: true
+        }))
+      });
+
+      // Check whether solved
+      question = question.set('solved', isSolved(guess, question));
+      playNewTileSound(question, SOUNDS.HINT);
+      state = getStateWithAwardedHints(state.set('currentQuestion', question));
       persistState = true;
       break;
     }

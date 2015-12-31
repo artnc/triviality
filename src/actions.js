@@ -22,7 +22,7 @@ const loadNewQuestion = questionJson => {
   const solutionRuns = questionJson.solution.trim().replace(
     /(\w+)/g,
     `${RUN_DELIMITER}$1${RUN_DELIMITER}`
-  ).split(RUN_DELIMITER).filter(run => run.length).map((run) => (
+  ).split(RUN_DELIMITER).filter(run => run.length).map(run => (
     run.charAt(0).match(/\w/) ? run.length : run
   ));
   const filteredSolution = questionJson.solution.replace(/[^\w]/g, '');
@@ -56,7 +56,7 @@ export const hydrate = (hydrateState, partial = false) => ({
 const INITIAL_STATE = Immutable.fromJS({
   hints: 20
 });
-export const hydrateNewQuestion = (initForNewUser) => (
+export const hydrateNewQuestion = initForNewUser => (
   (dispatch, getState) => {
     const delay = initForNewUser ? 0 : 3000;
     const bankSize = GRID_HEIGHT * GRID_WIDTH;
@@ -99,16 +99,12 @@ export const initState = () => {
   return hydrateNewQuestion(true);
 };
 
-export const addTile = (tileId, char) => ({
-  char,
+export const addTile = tileId => ({
   tileId,
   type: TILE_ADD
 });
 
-export const removeTile = tileId => ({
-  tileId,
-  type: TILE_REMOVE
-});
+export const removeTile = () => ({type: TILE_REMOVE});
 
 export const selectTile = tileId => ({
   tileId,

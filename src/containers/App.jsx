@@ -59,7 +59,7 @@ const App = React.createClass({
           guess={guess}
           guessTileIds={guessTileIds}
           onPromptClick={() => {
-            guessTileIds.size && dispatch(removeTile(guessTileIds.last()));
+            dispatch(removeTile());
           }}
           solutionRuns={solutionRuns}
           solved={solved}
@@ -68,12 +68,10 @@ const App = React.createClass({
           hints={hints}
           onExitClick={exit}
           onHintClick={() => {
-            hints && hints >= 1 && !solved && dispatch(useHint());
+            dispatch(useHint());
           }}
           onTileClick={tile => {
-            if (!tile.used && guess.includes(null)) {
-              dispatch(addTile(tile.id, tile.char));
-            }
+            dispatch(addTile(tile.id));
           }}
           selectedTileId={selectedTileId}
           solved={solved}

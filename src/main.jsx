@@ -44,17 +44,10 @@ document.addEventListener('keydown', e => {
   const state = store.getState().get('currentQuestion', Immutable.Map({}));
   switch (keyCode) {
     case 8: { // Backspace
-      const guessTileIds = state.get('guessTileIds');
-      const removeIndex = guessTileIds.findLastIndex((id) => (
-        typeof id === 'number'
-      ));
-      if (!state.get('solved') && removeIndex !== -1) {
-        store.dispatch(removeTile(guessTileIds.get(removeIndex)));
-      }
+      store.dispatch(removeTile());
       break;
     }
     case 13: { // Enter
-      const guess = state.get('guess');
       const selectedTileId = state.get('selectedTileId');
       switch (selectedTileId) {
         case EXIT_TILE_ID: {
@@ -62,16 +55,11 @@ document.addEventListener('keydown', e => {
           break;
         }
         case HINT_TILE_ID: {
-          if (!state.get('solved') && store.getState().get('hints', 0) >= 1) {
-            store.dispatch(useHint());
-          }
+          store.dispatch(useHint());
           break;
         }
         default: {
-          const tile = state.get('tiles').get(selectedTileId);
-          if (!tile.get('used') && guess.includes(null)) {
-            store.dispatch(addTile(selectedTileId, tile.get('char')));
-          }
+          store.dispatch(addTile(selectedTileId));
           break;
         }
       }
@@ -124,10 +112,7 @@ document.addEventListener('keydown', e => {
       break;
     }
     case 191: {
-      if (e.shiftKey) {
-        const hints = store.getState().get('hints');
-        hints >= 1 && !state.get('solved') && store.dispatch(useHint());
-      }
+      e.shiftKey && store.dispatch(useHint());
       break;
     }
     default: {
@@ -144,7 +129,7 @@ document.addEventListener('keydown', e => {
       }
       state.get('tiles').toJS().some((tile, id) => {
         if (!tile.used && tile.char === char) {
-          store.dispatch(addTile(id, tile.char));
+          store.dispatch(addTile(id));
           return true;
         }
       });
@@ -162,8 +147,7 @@ window.tvMode && window.addEventListener('load', () => {
     if (window.history.state === BACK_FLAG) {
       return;
     }
-    const guessTileIds = store.getState().get('guessTileIds');
-    guessTileIds.size && store.dispatch(removeTile(guessTileIds.last()));
+    store.dispatch(removeTile());
     window.history.pushState(BACK_FLAG, null, null);
   });
   window.history.pushState(BACK_FLAG, null, null);

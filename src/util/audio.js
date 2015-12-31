@@ -11,6 +11,6 @@ export const SOUNDS = {
 Object.keys(SOUNDS).forEach(sound => (new Audio(SOUNDS[sound])));
 
 const SOUNDS_ENABLED = true;
-export const playSound = (file) => {
+export const playSound = file => {
   SOUNDS_ENABLED && (new Audio(file)).play();
 };

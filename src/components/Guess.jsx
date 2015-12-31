@@ -20,7 +20,7 @@ export const Guess = createPureComponent({
         className={classNames(
           styles.guess,
           {
-            [styles.populated]: guessTileIds && guessTileIds.some((id) => (
+            [styles.populated]: guessTileIds && guessTileIds.some(id => (
               typeof id === 'number'
             )),
             [styles.solved]: solved
