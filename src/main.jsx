@@ -109,6 +109,7 @@ document.addEventListener('keydown', e => {
       }
 
       store.dispatch(selectTile(nextTileId));
+      pushKonami(keyCode);
       break;
     }
     case 191: {
@@ -138,6 +139,15 @@ document.addEventListener('keydown', e => {
   }
   eventHandled && e.preventDefault();
 });
+
+// Konami code easter egg
+const KONAMI = '3838404037393739';
+const konamiQueue = '00000000'.split('');
+const pushKonami = (keyCode) => {
+  konamiQueue.push(keyCode);
+  konamiQueue.shift();
+  konamiQueue.join('') === KONAMI && document.body.classList.toggle('dark');
+};
 
 // From https://developer.amazon.com/public/solutions/platforms/webapps/faq
 window.tvMode && window.addEventListener('load', () => {

@@ -23,7 +23,7 @@ export const QuestionMetadata = createPureComponent({
       switch (selectedTileId) {
         case EXIT_TILE_ID: {
           children = 'Thanks for playing! ' +
-            `Progress on question #${seenQuestions.size} will be saved.`;
+            `Question #${seenQuestions.size} will be saved.`;
           break;
         }
         case HINT_TILE_ID: {
