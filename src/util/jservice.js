@@ -120,6 +120,7 @@ export const getQuestion = (bankSize, seenQuestions, callback) => {
       retry();
       return;
     }
+    console.log(`Call to jService API succeeded. Solution: ${question.answer}`);
     callback(postprocessQuestion(bankSize, question));
   });
 };
