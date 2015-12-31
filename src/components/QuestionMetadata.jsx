@@ -3,24 +3,27 @@ import {createPureComponent} from '../util/react';
 import styles from '../components/QuestionMetadata.scss';
 import {EXIT_TILE_ID, HINT_TILE_ID} from '../constants';
 
-const getQuestionNumber = () => (
-  JSON.parse(window.localStorage.seenQuestions).length
-);
-
 export const QuestionMetadata = createPureComponent({
   render() {
-    const {category, difficulty, hints, selectedTileId, solved} = this.props;
+    const {
+      category,
+      difficulty,
+      hints,
+      seenQuestions,
+      selectedTileId,
+      solved
+    } = this.props;
 
     const h = Math.floor(hints);
     const hintsMessage = `You have ${h} ${h === 1 ? 'hint' : 'hints'} left.`;
     let children;
     if (solved) {
-      children = `Question #${getQuestionNumber()} solved! ${hintsMessage}`;
+      children = `Question #${seenQuestions.size} solved! ${hintsMessage}`;
     } else {
       switch (selectedTileId) {
         case EXIT_TILE_ID: {
           children = 'Thanks for playing! ' +
-            `Progress on question #${getQuestionNumber()} will be saved.`;
+            `Progress on question #${seenQuestions.size} will be saved.`;
           break;
         }
         case HINT_TILE_ID: {

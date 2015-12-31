@@ -8,6 +8,7 @@ export const HINT_USE = 'HINT_USE';
 export const HISTORY_STATE_POP = 'HISTORY_STATE_POP';
 export const HISTORY_STATE_PUSH = 'HISTORY_STATE_PUSH';
 export const HYDRATE = 'HYDRATE';
+export const QUESTION_SEE = 'QUESTION_SEE';
 export const TILE_ADD = 'TILE_ADD';
 export const TILE_REMOVE = 'TILE_REMOVE';
 export const TILE_SELECT = 'TILE_SELECT';
@@ -29,14 +30,7 @@ const loadNewQuestion = questionJson => {
   ));
   const filteredSolution = questionJson.solution.replace(/[^\w]/g, '');
 
-  // Mark question as seen
-  const seenQuestions = JSON.parse(localStorage.seenQuestions || '[]');
-  if (!seenQuestions.includes(questionJson.id)) {
-    seenQuestions.push(questionJson.id);
-    localStorage.seenQuestions = JSON.stringify(seenQuestions);
-  }
-
-  return Immutable.fromJS({
+  return {
     category: questionJson.category,
     difficulty: questionJson.difficulty,
     filteredSolution,
@@ -49,7 +43,7 @@ const loadNewQuestion = questionJson => {
     solved: false,
     tiles: solutionChars.map((char, id) => ({char, id, used: false})),
     tileString: questionJson.tileString
-  });
+  };
 };
 
 /* Action creators */
@@ -66,34 +60,44 @@ export const hydrate = (hydrateState, partial = false) => ({
   type: HYDRATE
 });
 
-const INITIAL_STATE = {
+const INITIAL_STATE = Immutable.fromJS({
   hints: 20
-};
-export const hydrateNewQuestion = initStateForNewUser => (dispatch => {
-  const delay = initStateForNewUser ? 0 : 3000;
-  const bankSize = GRID_HEIGHT * GRID_WIDTH;
-  const seenQuestions = JSON.parse(localStorage.seenQuestions || '[]');
-  let waiting = !!delay;
-  let currentQuestion;
-  const dispatchHydrate = () => {
-    let hydrateState = Immutable.fromJS({currentQuestion});
-    if (initStateForNewUser) {
-      hydrateState = hydrateState.merge(INITIAL_STATE);
-    }
-    return dispatch(hydrate(hydrateState, true));
-  };
-  getQuestion(bankSize, seenQuestions, question => {
-    currentQuestion = loadNewQuestion(question);
-    !waiting && dispatchHydrate();
-  });
-  delay && window.setTimeout(() => {
-    if (currentQuestion) {
-      dispatchHydrate();
-    } else {
-      waiting = false;
-    }
-  }, delay);
 });
+export const hydrateNewQuestion = (initForNewUser) => (
+  (dispatch, getState) => {
+    const delay = initForNewUser ? 0 : 3000;
+    const bankSize = GRID_HEIGHT * GRID_WIDTH;
+    const seenQuestions = getState().get(
+      'seenQuestions',
+      Immutable.List([])
+    ).toJS();
+    let waiting = !!delay;
+    let currentQuestion;
+    const dispatchHydrate = () => {
+      seenQuestions.push(currentQuestion.id);
+      let hydrateState = getState();
+      if (initForNewUser) {
+        hydrateState = hydrateState.merge(INITIAL_STATE);
+      }
+      hydrateState = hydrateState.merge({
+        currentQuestion: Immutable.fromJS(currentQuestion),
+        seenQuestions: Immutable.fromJS(seenQuestions)
+      });
+      return dispatch(hydrate(hydrateState, true));
+    };
+    getQuestion(bankSize, seenQuestions, question => {
+      currentQuestion = loadNewQuestion(question, dispatch);
+      !waiting && dispatchHydrate();
+    });
+    delay && window.setTimeout(() => {
+      if (currentQuestion) {
+        dispatchHydrate();
+      } else {
+        waiting = false;
+      }
+    }, delay);
+  }
+);
 export const initState = () => {
   const savedState = window.localStorage.state;
   if (typeof savedState === 'string') {
@@ -101,6 +105,11 @@ export const initState = () => {
   }
   return hydrateNewQuestion(true);
 };
+
+export const seeQuestion = questionId => ({
+  questionId,
+  type: QUESTION_SEE
+});
 
 export const addTile = (tileId, char) => ({
   char,

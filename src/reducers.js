@@ -4,6 +4,7 @@ import {
   HISTORY_STATE_POP,
   HISTORY_STATE_PUSH,
   HYDRATE,
+  QUESTION_SEE,
   TILE_ADD,
   TILE_REMOVE,
   TILE_SELECT,
@@ -178,6 +179,14 @@ const rootReducer = (state = Immutable.Map({}), action) => {
         action.state;
       state = rootReducer(hydrateState, {});
       persistState(state);
+      break;
+    }
+    case QUESTION_SEE: {
+      const seenQuestions = state.get('seenQuestions', Immutable.List([]));
+      if (!seenQuestions.includes(action.questionId)) {
+        state = state.set('seenQuestions',
+          seenQuestions.push(action.questionId));
+      }
       break;
     }
     case TILE_ADD:

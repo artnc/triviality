@@ -18,8 +18,9 @@ const App = React.createClass({
   render() {
     const {
       currentQuestion,
+      dispatch,
       hints,
-      dispatch
+      seenQuestions
     } = this.props;
 
     const {
@@ -49,6 +50,7 @@ const App = React.createClass({
           category={category}
           difficulty={difficulty}
           hints={hints}
+          seenQuestions={seenQuestions}
           selectedTileId={selectedTileId}
           solved={solved}
         />
@@ -84,6 +86,7 @@ const App = React.createClass({
 
 const mapStateToProps = state => ({
   currentQuestion: state.get('currentQuestion'),
-  hints: state.get('hints')
+  hints: state.get('hints'),
+  seenQuestions: state.get('seenQuestions')
 });
 export default connect(mapStateToProps)(App);
