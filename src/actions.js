@@ -5,8 +5,6 @@ import {getQuestion} from './util/jservice';
 /* Action types */
 
 export const HINT_USE = 'HINT_USE';
-export const HISTORY_STATE_POP = 'HISTORY_STATE_POP';
-export const HISTORY_STATE_PUSH = 'HISTORY_STATE_PUSH';
 export const HYDRATE = 'HYDRATE';
 export const TILE_ADD = 'TILE_ADD';
 export const TILE_REMOVE = 'TILE_REMOVE';
@@ -48,10 +46,6 @@ const loadNewQuestion = questionJson => {
 /* Action creators */
 
 export const useHint = () => ({type: HINT_USE});
-
-export const popHistoryState = () => ({type: HISTORY_STATE_POP});
-
-export const pushHistoryState = () => ({type: HISTORY_STATE_PUSH});
 
 export const hydrate = (hydrateState, partial = false) => ({
   partial,

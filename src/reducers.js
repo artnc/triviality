@@ -1,13 +1,10 @@
 import Immutable from 'immutable';
 import {
   HINT_USE,
-  HISTORY_STATE_POP,
-  HISTORY_STATE_PUSH,
   HYDRATE,
   TILE_ADD,
   TILE_REMOVE,
-  TILE_SELECT,
-  hydrate
+  TILE_SELECT
 } from './actions';
 import {SOUNDS, playSound} from './util/audio';
 
@@ -129,12 +126,6 @@ const currentQuestion = (state, action) => {
 
 /* Root reducer given to Redux.createStore */
 
-// Undo history is implemented using a stack of states stored in the HISTORY_KEY
-// array, which is the only state item exempt from versioning. An individual
-// state is pushed to HISTORY_KEY with its own HISTORY_KEY stripped, and it is
-// popped from HISTORY_KEY with the resulting value of HISTORY_KEY merged back
-// in. The store is then hydrated with the popped (i.e. previous) state.
-const HISTORY_KEY = '_stateHistory';
 const rootCombinedReducer = immutableCombineReducers({
   currentQuestion
 });
@@ -152,23 +143,6 @@ const rootReducer = (state = Immutable.Map({}), action) => {
     case HINT_USE: {
       state = state.set('hints', state.get('hints') - 1);
       state = getStateWithAwardedHints(state);
-      persistState = true;
-      break;
-    }
-    case HISTORY_STATE_POP: {
-      const history = state.get(HISTORY_KEY);
-      if (!(history && history.size)) {
-        break;
-      }
-      const previousState = history.last();
-      const hydrateState = previousState.set(HISTORY_KEY, history.pop());
-      state = rootReducer(undefined, hydrate(hydrateState));
-      persistState = true;
-      break;
-    }
-    case HISTORY_STATE_PUSH: {
-      const history = state.get(HISTORY_KEY, Immutable.List([]));
-      state = state.set(HISTORY_KEY, history.push(state.delete(HISTORY_KEY)));
       persistState = true;
       break;
     }
