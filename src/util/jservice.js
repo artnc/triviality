@@ -30,10 +30,25 @@ const isQuestionValid = (bankSize, seenQuestions, question) => {
   return valid;
 };
 
-const stripHtmlTags = html => {
+const normalizeString = html => {
   const node = document.createElement('div');
   node.innerHTML = html;
-  return node.textContent || node.innerText || '';
+  const text = node.textContent || node.innerText || '';
+
+  return text && text
+    .replace(/\\/g, '')
+    .replace(/'/g, '\u2019')
+    .replace(/"(.+?)"/g, '\u201c$1\u201d')
+    .replace(/ *\/ */g, ' / ')
+    .replace(/ *\( */g, ' (')
+    .replace(/ *\) */g, ') ')
+    .replace(/ *, */g, ', ')
+    .replace(/ *: */g, ': ')
+    .replace(/ *; */g, '; ')
+    .replace(/ *-- */g, '\u2014')
+    .replace(/ *& */g, ' and ')
+    .replace(/\s+/g, ' ')
+    .trim();
 };
 
 const DOUBLED_PRICES_AIRDATE = '2001-11-26T12:00:00.000Z';
@@ -42,22 +57,20 @@ const preprocessQuestion = question => {
     question.value *= 2;
   }
   const processedQuestion = Object.assign({}, question, {
-    answer: stripHtmlTags(question.answer)
+    answer: normalizeString(question.answer)
       .split('/')[0]
-      .replace(/\\/g, '')
+      .replace(/\(.+\)/g, '')
       .replace(/^an? /, '')
-      .replace(/\(.+\) ?/g, '')
+      .replace(/\s+/g, ' ')
       .trim(),
-    question: stripHtmlTags(question.question)
-      .replace(/\( +/g, '(')
-      .replace(/ +\)/g, ')')
-      .replace(/\\/g, '')
-      .replace(/, ?([^\d])/g, ', $1')
-      .replace(/: ?/g, ': ')
-      .replace(/ *-- */g, '\u2014')
-      .replace(/ ?& ?/g, ' and ')
+    question: normalizeString(question.question)
+      .replace(/\s+/g, ' ')
       .trim()
   });
+  const category = processedQuestion.category;
+  if (category) {
+    category.title = normalizeString(category.title);
+  }
   return processedQuestion;
 };
 
