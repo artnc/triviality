@@ -10,39 +10,6 @@ export const TILE_ADD = 'TILE_ADD';
 export const TILE_REMOVE = 'TILE_REMOVE';
 export const TILE_SELECT = 'TILE_SELECT';
 
-/* Action utils */
-
-// Arbitrary constant unlikely to ever appear naturally
-const RUN_DELIMITER = '@#"';
-
-// Converts the server's question format into a complete Redux state
-const loadNewQuestion = questionJson => {
-  // Post-process question
-  const solutionChars = questionJson.tileString.split('');
-  const solutionRuns = questionJson.solution.trim().replace(
-    /(\w+)/g,
-    `${RUN_DELIMITER}$1${RUN_DELIMITER}`
-  ).split(RUN_DELIMITER).filter(run => run.length).map(run => (
-    run.charAt(0).match(/\w/) ? run.length : run
-  ));
-  const filteredSolution = questionJson.solution.replace(/[^\w]/g, '');
-
-  return {
-    category: questionJson.category,
-    difficulty: questionJson.difficulty,
-    filteredSolution,
-    guess: (new Array(filteredSolution.length)).fill(null),
-    guessTileIds: (new Array(filteredSolution.length)).fill(null),
-    id: questionJson.id,
-    prompt: questionJson.prompt,
-    selectedTileId: 0,
-    solutionRuns,
-    solved: false,
-    tiles: solutionChars.map((char, id) => ({char, id, used: false})),
-    tileString: questionJson.tileString
-  };
-};
-
 /* Action creators */
 
 export const useHint = () => ({type: HINT_USE});
@@ -79,7 +46,7 @@ export const hydrateNewQuestion = initForNewUser => (
       return dispatch(hydrate(hydrateState, true));
     };
     getQuestion(bankSize, seenQuestions, question => {
-      currentQuestion = loadNewQuestion(question, dispatch);
+      currentQuestion = question;
       !waiting && dispatchHydrate();
     });
     delay && window.setTimeout(() => {

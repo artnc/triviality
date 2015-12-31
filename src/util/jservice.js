@@ -101,9 +101,9 @@ const postprocessQuestion = (bankSize, question) => {
   };
 };
 
-export const getQuestion = (bankSize, seenQuestions, callback) => {
+const getRawQuestion = (bankSize, seenQuestions, callback) => {
   const retry = () => window.setTimeout(() => (
-    getQuestion(bankSize, seenQuestions, callback)
+    getRawQuestion(bankSize, seenQuestions, callback)
   ), 125);
   http.getJSON('http://jservice.io/api/random', data => {
     if (data === null) {
@@ -122,5 +122,41 @@ export const getQuestion = (bankSize, seenQuestions, callback) => {
     }
     console.log(`Call to jService API succeeded. Solution: ${question.answer}`);
     callback(postprocessQuestion(bankSize, question));
+  });
+};
+
+// Arbitrary constant unlikely to ever appear naturally
+const RUN_DELIMITER = '@#"';
+const convertRawQuestion = questionJson => {
+  // Post-process question
+  const solutionChars = questionJson.tileString.split('');
+  const solutionRuns = questionJson.solution.trim().replace(
+    /(\w+)/g,
+    `${RUN_DELIMITER}$1${RUN_DELIMITER}`
+  ).split(RUN_DELIMITER).filter(run => run.length).map(run => (
+    run.charAt(0).match(/\w/) ? run.length : run
+  ));
+  const filteredSolution = questionJson.solution.replace(/[^\w]/g, '');
+
+  return {
+    category: questionJson.category,
+    difficulty: questionJson.difficulty,
+    filteredSolution,
+    guess: (new Array(filteredSolution.length)).fill(null),
+    guessTileIds: (new Array(filteredSolution.length)).fill(null),
+    id: questionJson.id,
+    prompt: questionJson.prompt,
+    selectedTileId: 0,
+    solutionRuns,
+    solved: false,
+    tiles: solutionChars.map((char, id) => ({char, id, used: false})),
+    tileString: questionJson.tileString
+  };
+};
+
+// Converts the server's question format into a Redux substate
+export const getQuestion = (bankSize, seenQuestions, callback) => {
+  getRawQuestion(bankSize, seenQuestions, questionJson => {
+    callback(convertRawQuestion(questionJson));
   });
 };
