@@ -123,6 +123,13 @@ document.addEventListener('keydown', e => {
       store.dispatch(selectTile(nextTileId));
       break;
     }
+    case 191: {
+      if (e.shiftKey) {
+        const hints = store.getState().get('hints');
+        hints >= 1 && !state.get('solved') && store.dispatch(useHint());
+      }
+      break;
+    }
     default: {
       if (e.ctrlKey || e.altKey || e.metaKey || keyCode < 48 || keyCode > 90) {
         eventHandled = false;
