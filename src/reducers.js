@@ -117,7 +117,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
     case HINT_USE: {
       // Validate action
       const hints = state.get('hints', 0);
-      if (hints < 1 || state.get('solved', false)) {
+      if (hints < 1 || state.getIn(['currentQuestion', 'solved'], false)) {
         break;
       }
 
