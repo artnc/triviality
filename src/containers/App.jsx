@@ -12,7 +12,7 @@ import {Bank} from 'components/Bank';
 import {Guess} from 'components/Guess';
 import {Prompt} from 'components/Prompt';
 import {QuestionMetadata} from 'components/QuestionMetadata';
-import styles from 'containers/App.scss';
+import styles from 'styles/App.scss';
 import {exit} from 'util/navigation';
 
 const App = React.createClass({

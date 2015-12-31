@@ -1,7 +1,7 @@
 import React from 'react';
 
-import styles from 'components/QuestionMetadata.scss';
 import {EXIT_TILE_ID, HINT_TILE_ID} from 'constants';
+import styles from 'styles/QuestionMetadata.scss';
 import {createPureComponent} from 'util/react';
 
 export const QuestionMetadata = createPureComponent({

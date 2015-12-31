@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import styles from 'components/Bank.scss';
 import {Tile} from 'components/Tile';
 import {
   BANK_EXTRAS_ROW,
@@ -11,6 +10,7 @@ import {
   GRID_WIDTH,
   SIDE_PADDING
 } from 'constants';
+import styles from 'styles/Bank.scss';
 import {createPureComponent} from 'util/react';
 
 export const Bank = createPureComponent({

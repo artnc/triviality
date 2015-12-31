@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import styles from 'styles/Tile.scss';
 import {createPureComponent} from 'util/react';
-import styles from 'components/Tile.scss';
 
 export const Tile = createPureComponent({
   render() {

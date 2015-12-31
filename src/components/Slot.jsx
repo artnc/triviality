@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
 
+import styles from 'styles/Slot.scss';
 import {createPureComponent} from 'util/react';
-import styles from 'components/Slot.scss';
 
 export const Slot = createPureComponent({
   render() {
