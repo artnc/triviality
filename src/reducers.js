@@ -4,7 +4,6 @@ import {
   HISTORY_STATE_POP,
   HISTORY_STATE_PUSH,
   HYDRATE,
-  QUESTION_SEE,
   TILE_ADD,
   TILE_REMOVE,
   TILE_SELECT,
@@ -130,10 +129,6 @@ const currentQuestion = (state, action) => {
 
 /* Root reducer given to Redux.createStore */
 
-const persistState = state => {
-  window.localStorage.state = JSON.stringify(state.toJS());
-};
-
 // Undo history is implemented using a stack of states stored in the HISTORY_KEY
 // array, which is the only state item exempt from versioning. An individual
 // state is pushed to HISTORY_KEY with its own HISTORY_KEY stripped, and it is
@@ -152,11 +147,12 @@ const getStateWithAwardedHints = state => {
 };
 const rootReducer = (state = Immutable.Map({}), action) => {
   state = rootCombinedReducer(state, action);
+  let persistState = false;
   switch (action.type) {
     case HINT_USE: {
       state = state.set('hints', state.get('hints') - 1);
       state = getStateWithAwardedHints(state);
-      persistState(state);
+      persistState = true;
       break;
     }
     case HISTORY_STATE_POP: {
@@ -167,35 +163,35 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       const previousState = history.last();
       const hydrateState = previousState.set(HISTORY_KEY, history.pop());
       state = rootReducer(undefined, hydrate(hydrateState));
+      persistState = true;
       break;
     }
     case HISTORY_STATE_PUSH: {
       const history = state.get(HISTORY_KEY, Immutable.List([]));
       state = state.set(HISTORY_KEY, history.push(state.delete(HISTORY_KEY)));
+      persistState = true;
       break;
     }
     case HYDRATE: {
       const hydrateState = action.partial ? state.merge(action.state) :
         action.state;
       state = rootReducer(hydrateState, {});
-      persistState(state);
-      break;
-    }
-    case QUESTION_SEE: {
-      const seenQuestions = state.get('seenQuestions', Immutable.List([]));
-      if (!seenQuestions.includes(action.questionId)) {
-        state = state.set('seenQuestions',
-          seenQuestions.push(action.questionId));
-      }
+      persistState = true;
       break;
     }
     case TILE_ADD:
     case TILE_REMOVE: {
       state = getStateWithAwardedHints(state);
-      persistState(state);
+      persistState = true;
       break;
     }
   }
+
+  // Aggressively save state to disk
+  if (persistState) {
+    window.localStorage.state = JSON.stringify(state.toJS());
+  }
+
   return state;
 };
 export default rootReducer;

@@ -8,7 +8,6 @@ export const HINT_USE = 'HINT_USE';
 export const HISTORY_STATE_POP = 'HISTORY_STATE_POP';
 export const HISTORY_STATE_PUSH = 'HISTORY_STATE_PUSH';
 export const HYDRATE = 'HYDRATE';
-export const QUESTION_SEE = 'QUESTION_SEE';
 export const TILE_ADD = 'TILE_ADD';
 export const TILE_REMOVE = 'TILE_REMOVE';
 export const TILE_SELECT = 'TILE_SELECT';
@@ -105,11 +104,6 @@ export const initState = () => {
   }
   return hydrateNewQuestion(true);
 };
-
-export const seeQuestion = questionId => ({
-  questionId,
-  type: QUESTION_SEE
-});
 
 export const addTile = (tileId, char) => ({
   char,
