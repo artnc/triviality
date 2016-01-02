@@ -40,22 +40,25 @@ const normalizeString = html => {
   const node = document.createElement('div');
   node.innerHTML = html;
   const text = node.textContent || node.innerText || '';
+  return fixPunctuation(text);
+};
 
-  return text && text
+export const fixPunctuation = (text) => (
+  text && text
     .replace(/\\/g, '')
     .replace(/'/g, '\u2019')
     .replace(/"(.+?)"/g, '\u201c$1\u201d')
     .replace(/ *\/ */g, ' / ')
     .replace(/ *\( */g, ' (')
     .replace(/ *\) */g, ') ')
-    .replace(/ *,/g, ',')
-    .replace(/ *: */g, ': ')
+    .replace(/ +([,:])/g, '$1')
+    .replace(/([,:])([^\d])/g, '$1 $2')
     .replace(/ *; */g, '; ')
     .replace(/ *-- */g, '\u2014')
     .replace(/ *& */g, ' and ')
     .replace(/\s+/g, ' ')
-    .trim();
-};
+    .trim()
+);
 
 const DOUBLED_PRICES_AIRDATE = '2001-11-26T12:00:00.000Z';
 const preprocessQuestion = question => {
