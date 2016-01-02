@@ -8,9 +8,14 @@ export const SOUNDS = {
 };
 
 // Prefetch all sounds
-Object.keys(SOUNDS).forEach(sound => (new Audio(SOUNDS[sound])));
+for (const sound in SOUNDS) {
+  SOUNDS[sound] = new Audio(SOUNDS[sound]);
+}
 
 const SOUNDS_ENABLED = true;
-export const playSound = file => {
-  SOUNDS_ENABLED && (new Audio(file)).play();
+export const playSound = audio => {
+  if (SOUNDS_ENABLED) {
+    audio.currentTime = 0;
+    audio.play();
+  }
 };
