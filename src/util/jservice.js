@@ -8,10 +8,12 @@ const BAD_STRINGS = [
   '(kelly ',
   '(sarah ',
   '(sofia ',
+  'audio clue',
   'clue crew',
   'following clip',
   'heard here',
-  'seen here'
+  'seen here',
+  'video clue'
 ];
 const isQuestionValid = (bankSize, seenQuestions, question) => {
   const lowercasedClueText = question.question.toLowerCase();
@@ -46,7 +48,7 @@ const normalizeString = html => {
     .replace(/ *\/ */g, ' / ')
     .replace(/ *\( */g, ' (')
     .replace(/ *\) */g, ') ')
-    .replace(/ *, */g, ', ')
+    .replace(/ *,/g, ',')
     .replace(/ *: */g, ': ')
     .replace(/ *; */g, '; ')
     .replace(/ *-- */g, '\u2014')
