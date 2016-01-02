@@ -24,8 +24,8 @@ const immutableCombineReducers = reducers => {
 
 /* Substate reducers */
 
-const isSolved = (guess, state) => (
-  guess.join('') === state.get('filteredSolution')
+const isSolved = (state) => (
+  state.get('guess').join('') === state.get('filteredSolution')
 );
 const playNewTileSound = (state, defaultSound) => {
   if (state.get('solved')) {
@@ -57,7 +57,7 @@ const currentQuestion = (state, action) => {
       });
 
       // Check whether solved
-      state = state.set('solved', isSolved(guess, state));
+      state = state.set('solved', isSolved(state));
       playNewTileSound(state, SOUNDS.LETTER);
       break;
     }
@@ -122,35 +122,93 @@ const rootReducer = (state = Immutable.Map({}), action) => {
         break;
       }
 
-      // Consume hint
+      // Decrement hint
       state = state.set('hints', hints - 1);
+
+      // Randomly select an index in the solution to hint
       let question = state.get('currentQuestion');
       const hintIndexPool = [];
-      const guessTileIds = question.get('guessTileIds');
+      let guessTileIds = question.get('guessTileIds');
       guessTileIds.toJS().forEach((id, i) => {
         (typeof id !== 'string') && hintIndexPool.push(i);
       });
       const hintIndex = hintIndexPool[Math.floor(Math.random() *
         hintIndexPool.length)];
       const hintChar = question.get('filteredSolution')[hintIndex];
-      const hintTile = question.get('tiles').find(t => (
-        t.get('char') === hintChar
+
+      // If there's already a tile at the hint index, unuse it
+      const displacedTileId = guessTileIds.get(hintIndex);
+      if (typeof displacedTileId === 'number') {
+        question = question.setIn(['tiles', displacedTileId, 'used'], false);
+      }
+
+      // Choose a tile to put at the hint index, preferring unused tiles
+      let hintTileFromBank = true;
+      let hintTile = question.get('tiles').find(t => (
+        t.get('char') === hintChar && !t.get('used')
       ));
-      const guess = question.get('guess').set(hintIndex, hintChar);
+      if (!hintTile) {
+        hintTile = question.get('tiles').find(t => (
+          t.get('char') === hintChar && !guessTileIds.includes(`${t.get('id')}`)
+        ));
+        hintTileFromBank = false;
+      }
+      const hintTileId = hintTile.get('id');
+
+      // If we had to use an already used tile, remove its char from the guess
+      if (!hintTileFromBank) {
+        const misplacedIndex = guessTileIds.indexOf(hintTileId);
+        question = question.setIn(['guess', misplacedIndex], null);
+        guessTileIds = guessTileIds.set(misplacedIndex, null);
+      }
+
+      // Add hint tile to guess
       question = question.merge({
-        guess,
-        guessTileIds: guessTileIds.set(hintIndex, hintChar),
-        tiles: question.get('tiles').set(hintTile.get('id'), hintTile.merge({
+        guess: question.get('guess').set(hintIndex, hintChar),
+        guessTileIds: guessTileIds.set(hintIndex, `${hintTileId}`),
+        tiles: question.get('tiles').mergeIn([hintTileId], {
           solved: true,
           used: true
-        }))
+        })
       });
 
+      // Sanity checks (since there are no unit tests...)
+      if (__DEV__) {
+        for (let i = 0; i < question.get('guess').size; ++i) {
+          const tileId = question.getIn(['guessTileIds', i]);
+          const guessChar = question.getIn(['guess', i]);
+          switch (typeof tileId) {
+            case 'number': {
+              if (question.getIn(['tiles', tileId, 'char']) !== guessChar) {
+                console.error('Guess char doesn\'t match reference char');
+              }
+              break;
+            }
+            case 'object': {
+              guessChar !== null && console.error('Guess contains feral char');
+              break;
+            }
+            case 'string': {
+              if (question.getIn(
+                ['tiles', parseInt(tileId), 'char']) !== guessChar) {
+                console.error('Guess char doesn\'t match hint char');
+              }
+              break;
+            }
+            default: {
+              console.error('Guess reference of wrong type');
+              break;
+            }
+          }
+        }
+      }
+
       // Check whether solved
-      question = question.set('solved', isSolved(guess, question));
+      question = question.set('solved', isSolved(question));
       playNewTileSound(question, SOUNDS.HINT);
       state = getStateWithAwardedHints(state.set('currentQuestion', question));
       persistState = true;
+
       break;
     }
     case HYDRATE: {
