@@ -1,10 +1,10 @@
 export const SOUNDS = {
-  BUTTON: '/trivia/sounds/button.wav',
-  ERASE: '/trivia/sounds/erase.wav',
-  ERROR: '/trivia/sounds/error.wav',
-  HINT: '/trivia/sounds/hint.wav',
-  LETTER: '/trivia/sounds/letter.wav',
-  WIN: '/trivia/sounds/win.wav'
+  BUTTON: 'trivia/sounds/button.wav',
+  ERASE: 'trivia/sounds/erase.wav',
+  ERROR: 'trivia/sounds/error.wav',
+  HINT: 'trivia/sounds/hint.wav',
+  LETTER: 'trivia/sounds/letter.wav',
+  WIN: 'trivia/sounds/win.wav'
 };
 
 // Prefetch all sounds

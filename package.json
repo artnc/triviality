@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "publish": "NODE_ENV=production webpack -p && cp -a dist/. ../triviality-gh-pages && pushd ../triviality-gh-pages && git add -A && git commit --amend --no-edit && git push -f && popd",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
