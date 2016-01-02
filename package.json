@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "publish": "NODE_ENV=production webpack -p && cp -a dist/. ../triviality-gh-pages && pushd ../triviality-gh-pages && git add -A && git commit --amend --no-edit && git push -f && popd",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers js:babel-core/register --recursive -w --watch-extensions jsx"
   },
   "author": "",
   "license": "BSD",
@@ -32,7 +32,9 @@
     "postcss-loader": "~0.8.0",
     "normalize.css": "~3.0.3",
     "eslint-loader": "~1.1.1",
-    "redux-thunk": "~1.0.3"
+    "redux-thunk": "~1.0.3",
+    "chai": "~3.4.1",
+    "mocha": "~2.3.4"
   },
   "babel": {
     "presets": [
