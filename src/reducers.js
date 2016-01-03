@@ -8,6 +8,7 @@ import {
   TILE_SELECT
 } from 'actions';
 import {SOUNDS, playSound} from 'util/audio';
+import {track} from 'util/tracking';
 
 /* Reducer utils */
 
@@ -59,6 +60,7 @@ const currentQuestion = (state, action) => {
 
       // Check whether solved
       state = state.set('solved', isSolved(state));
+      state.get('solved') && track('SOLVE_QUESTION');
       playNewTileSound(state, SOUNDS.LETTER);
       break;
     }
@@ -167,9 +169,11 @@ const rootReducer = (state = Immutable.Map({}), action) => {
           used: true
         })
       });
+      track('USE_HINT');
 
       // Check whether solved
       question = question.set('solved', isSolved(question));
+      question.get('solved') && track('SOLVE_QUESTION');
       playNewTileSound(question, SOUNDS.HINT);
       state = getStateWithAwardedHints(state.set('currentQuestion', question));
       persistState = true;

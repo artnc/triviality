@@ -22,6 +22,7 @@ import rootReducer from 'reducers';
 import createStoreWithMiddleware from 'store';
 import 'styles/global.scss';
 import {exit} from 'util/navigation';
+import {track} from 'util/tracking';
 
 /* Initialize Redux */
 
@@ -164,3 +165,5 @@ window.tvMode && window.addEventListener('load', () => {
   });
   window.history.pushState(BACK_FLAG, null, null);
 });
+
+window.addEventListener('load', () => track('LOAD_GAME_PAGE'));

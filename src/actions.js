@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 
 import {GRID_HEIGHT, GRID_WIDTH} from 'constants';
 import {getQuestion} from 'util/jservice';
+import {track} from 'util/tracking';
 
 /* Action types */
 
@@ -45,6 +46,7 @@ export const hydrateNewQuestion = initForNewUser => (
         currentQuestion: Immutable.fromJS(currentQuestion),
         seenQuestions: Immutable.fromJS(seenQuestions)
       });
+      track('GET_QUESTION');
       return dispatch(hydrate(hydrateState, true));
     };
     getQuestion(bankSize, seenQuestions, question => {
