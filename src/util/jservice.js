@@ -164,7 +164,6 @@ const convertRawQuestion = questionJson => {
     category: questionJson.category,
     difficulty: questionJson.difficulty,
     filteredSolution,
-    guess: (new Array(filteredSolution.length)).fill(null),
     guessTileIds: (new Array(filteredSolution.length)).fill(null),
     id: questionJson.id,
     prompt: questionJson.prompt,

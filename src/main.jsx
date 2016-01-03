@@ -126,7 +126,7 @@ document.addEventListener('keydown', e => {
       // Alphanumeric
       const char = String.fromCharCode(keyCode);
       if (!(state.get('tileString').includes(char) &&
-        state.get('guess').includes(null))) {
+        state.get('guessTileIds').includes(null))) {
         break;
       }
       state.get('tiles').toJS().some((tile, id) => {

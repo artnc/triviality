@@ -25,12 +25,15 @@ const immutableCombineReducers = reducers => {
 /* Substate reducers */
 
 const isSolved = (state) => (
-  state.get('guess').join('') === state.get('filteredSolution')
+  state.get('filteredSolution') === state.get('guessTileIds').reduce(
+    (current, next) => (current + state.getIn(['tiles', next, 'char'], '_')),
+    ''
+  )
 );
 const playNewTileSound = (state, defaultSound) => {
   if (state.get('solved')) {
     playSound(SOUNDS.WIN);
-  } else if (state.get('guess').includes(null)) {
+  } else if (state.get('guessTileIds').includes(null)) {
     playSound(defaultSound);
   } else {
     playSound(SOUNDS.ERROR);
@@ -41,17 +44,15 @@ const currentQuestion = (state, action) => {
     case TILE_ADD: {
       // Validate action
       const tileUsedKeyPath = ['tiles', action.tileId, 'used'];
-      if (state.getIn(tileUsedKeyPath) || !state.get('guess').includes(null)) {
+      if (state.getIn(tileUsedKeyPath) || !state.get('guessTileIds').includes(
+        null)) {
         break;
       }
 
       // Mark tile used
       state = state.setIn(tileUsedKeyPath, true);
-      const addIndex = state.get('guess').indexOf(null);
-      const tileChar = state.getIn(['tiles', action.tileId, 'char']);
-      const guess = state.get('guess').set(addIndex, tileChar);
+      const addIndex = state.get('guessTileIds').indexOf(null);
       state = state.merge({
-        guess,
         guessTileIds: state.get('guessTileIds').set(addIndex, action.tileId),
         selectedTileId: action.tileId
       });
@@ -65,7 +66,7 @@ const currentQuestion = (state, action) => {
       // Validate action
       const guessTileIds = state.get('guessTileIds', Immutable.List([]));
       const removeIndex = guessTileIds.findLastIndex(id => (
-        typeof id === 'number'
+        typeof id === 'number' && !state.getIn(['tiles', id, 'hinted'])
       ));
       if (state.get('solved') || removeIndex === -1) {
         break;
@@ -74,10 +75,7 @@ const currentQuestion = (state, action) => {
       // Mark tile unused
       const tileUsedKeyPath = ['tiles', guessTileIds.get(removeIndex), 'used'];
       state = state.setIn(tileUsedKeyPath, false);
-      state = state.merge({
-        guess: state.get('guess').set(removeIndex, null),
-        guessTileIds: guessTileIds.set(removeIndex, null)
-      });
+      state = state.set('guessTileIds', guessTileIds.set(removeIndex, null));
       playSound(SOUNDS.ERASE);
       break;
     }
@@ -130,27 +128,27 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       const hintIndexPool = [];
       let guessTileIds = question.get('guessTileIds');
       guessTileIds.toJS().forEach((id, i) => {
-        (typeof id !== 'string') && hintIndexPool.push(i);
+        (id === null || !question.getIn(['tiles', id, 'hinted'])) &&
+          hintIndexPool.push(i);
       });
       const hintIndex = hintIndexPool[Math.floor(Math.random() *
         hintIndexPool.length)];
-      const hintChar = question.get('filteredSolution')[hintIndex];
 
       // If there's already a tile at the hint index, unuse it
       const displacedTileId = guessTileIds.get(hintIndex);
-      if (typeof displacedTileId === 'number') {
+      if (displacedTileId !== null) {
         question = question.setIn(['tiles', displacedTileId, 'used'], false);
       }
 
       // Choose a tile to put at the hint index, preferring unused tiles
       let hintTileFromBank = true;
-      let hintTile = question.get('tiles').find(t => (
-        t.get('char') === hintChar && !t.get('used')
+      const hintChar = question.get('filteredSolution')[hintIndex];
+      const hintCharTiles = question.get('tiles').filter(t => (
+        t.get('char') === hintChar
       ));
+      let hintTile = hintCharTiles.find(t => !t.get('used'));
       if (!hintTile) {
-        hintTile = question.get('tiles').find(t => (
-          t.get('char') === hintChar && !guessTileIds.includes(`${t.get('id')}`)
-        ));
+        hintTile = hintCharTiles.find(t => !t.get('hinted'));
         hintTileFromBank = false;
       }
       const hintTileId = hintTile.get('id');
@@ -158,50 +156,17 @@ const rootReducer = (state = Immutable.Map({}), action) => {
       // If we had to use an already used tile, remove its char from the guess
       if (!hintTileFromBank) {
         const misplacedIndex = guessTileIds.indexOf(hintTileId);
-        question = question.setIn(['guess', misplacedIndex], null);
         guessTileIds = guessTileIds.set(misplacedIndex, null);
       }
 
       // Add hint tile to guess
       question = question.merge({
-        guess: question.get('guess').set(hintIndex, hintChar),
-        guessTileIds: guessTileIds.set(hintIndex, `${hintTileId}`),
+        guessTileIds: guessTileIds.set(hintIndex, hintTileId),
         tiles: question.get('tiles').mergeIn([hintTileId], {
-          solved: true,
+          hinted: true,
           used: true
         })
       });
-
-      // Sanity checks (since there are no unit tests...)
-      if (__DEV__) {
-        for (let i = 0; i < question.get('guess').size; ++i) {
-          const tileId = question.getIn(['guessTileIds', i]);
-          const guessChar = question.getIn(['guess', i]);
-          switch (typeof tileId) {
-            case 'number': {
-              if (question.getIn(['tiles', tileId, 'char']) !== guessChar) {
-                console.error('Guess char doesn\'t match reference char');
-              }
-              break;
-            }
-            case 'object': {
-              guessChar !== null && console.error('Guess contains feral char');
-              break;
-            }
-            case 'string': {
-              if (question.getIn(
-                ['tiles', parseInt(tileId), 'char']) !== guessChar) {
-                console.error('Guess char doesn\'t match hint char');
-              }
-              break;
-            }
-            default: {
-              console.error('Guess reference of wrong type');
-              break;
-            }
-          }
-        }
-      }
 
       // Check whether solved
       question = question.set('solved', isSolved(question));

@@ -8,11 +8,11 @@ import {createPureComponent} from 'util/react';
 export const Guess = createPureComponent({
   render() {
     const {
-      guess,
       guessTileIds,
       onPromptClick,
       solutionRuns,
-      solved
+      solved,
+      tiles
     } = this.props;
 
     let slotGroupPosition = 0;
@@ -21,8 +21,8 @@ export const Guess = createPureComponent({
         className={classNames(
           styles.guess,
           {
-            [styles.populated]: guessTileIds && guessTileIds.some(id => (
-              typeof id === 'number'
+            [styles.populated]: guessTileIds && guessTileIds.some((id) => (
+              id !== null
             )),
             [styles.solved]: solved
           }
@@ -35,14 +35,13 @@ export const Guess = createPureComponent({
           }
 
           const slotGroup = [];
-          let guessIndex;
+          let tileId;
           for (let i = 0; i < run; ++i) {
-            guessIndex = slotGroupPosition + i;
+            tileId = guessTileIds.get(slotGroupPosition + i);
             slotGroup.push(
               <Slot
-                solved={solved ||
-                  typeof guessTileIds.get(guessIndex) === 'string'}
-              >{guess.get(guessIndex) || '\u00a0'}</Slot>
+                solved={solved || tiles.getIn([tileId, 'hinted'])}
+              >{tiles.getIn([tileId, 'char'], '\u00a0')}</Slot>
             );
           }
 

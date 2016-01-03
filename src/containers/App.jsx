@@ -27,7 +27,6 @@ const App = React.createClass({
     const {
       category,
       difficulty,
-      guess,
       guessTileIds,
       prompt,
       selectedTileId,
@@ -57,13 +56,13 @@ const App = React.createClass({
         />
         <Prompt>{prompt}</Prompt>
         <Guess
-          guess={guess}
           guessTileIds={guessTileIds}
           onPromptClick={() => {
             dispatch(removeTile());
           }}
           solutionRuns={solutionRuns}
           solved={solved}
+          tiles={tiles}
         />
         <Bank
           hints={hints}

@@ -15,7 +15,6 @@ if (__LOG_STATES__) {
     'font-weight:700'
   );
   middleWare.push(createLogger({
-    collapsed: true,
     predicate: (getState, action) => !HIDDEN_ACTIONS.includes(action.type),
     stateTransformer: state => state.toJS()
   }));
