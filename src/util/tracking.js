@@ -1,11 +1,12 @@
 import 'lib/amplitude';
+import {LOCALSTORAGE, getItem, setItem} from 'util/storage';
 
 const AMPLITUDE_API_KEY = '43c9261027eec7e7a89ceca5f5d4563d';
 const DO_NOT_TRACK = __DEV__ || window.location.search.includes('dnt') ||
-  window.localStorage.dnt === 'true';
+  getItem(LOCALSTORAGE.DNT);
 
 if (DO_NOT_TRACK) {
-  window.localStorage.dnt = 'true';
+  setItem(LOCALSTORAGE.DNT, true);
 } else {
   window.amplitude.init(AMPLITUDE_API_KEY, null, {
     includeReferrer: true

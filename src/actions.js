@@ -3,6 +3,7 @@ import Immutable from 'immutable';
 
 import {GRID_HEIGHT, GRID_WIDTH} from 'constants';
 import {getQuestion} from 'util/jservice';
+import {LOCALSTORAGE, getItem} from 'util/storage';
 import {track} from 'util/tracking';
 
 /* Action types */
@@ -63,9 +64,9 @@ export const hydrateNewQuestion = initForNewUser => (
   }
 );
 export const initState = () => {
-  const savedState = window.localStorage.state;
-  if (typeof savedState === 'string') {
-    return hydrate(Immutable.fromJS(JSON.parse(savedState)));
+  const savedState = getItem(LOCALSTORAGE.STATE);
+  if (savedState) {
+    return hydrate(Immutable.fromJS(savedState));
   }
   return hydrateNewQuestion(true);
 };

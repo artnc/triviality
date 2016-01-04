@@ -8,6 +8,7 @@ import {
   TILE_SELECT
 } from 'actions';
 import {SOUNDS, playSound} from 'util/audio';
+import {LOCALSTORAGE, setItem} from 'util/storage';
 import {track} from 'util/tracking';
 
 /* Reducer utils */
@@ -196,9 +197,7 @@ const rootReducer = (state = Immutable.Map({}), action) => {
   }
 
   // Aggressively save state to disk
-  if (persistState) {
-    window.localStorage.state = JSON.stringify(state.toJS());
-  }
+  persistState && setItem(LOCALSTORAGE.STATE, state.toJS());
 
   return state;
 };
