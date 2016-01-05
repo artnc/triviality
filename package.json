@@ -34,7 +34,8 @@
     "eslint-loader": "~1.1.1",
     "redux-thunk": "~1.0.3",
     "chai": "~3.4.1",
-    "mocha": "~2.3.4"
+    "mocha": "~2.3.4",
+    "babel-polyfill": "~6.3.14"
   },
   "babel": {
     "presets": [
