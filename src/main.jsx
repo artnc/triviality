@@ -165,7 +165,9 @@ window.tvMode && window.addEventListener('load', () => {
     store.dispatch(removeTile());
     window.history.pushState(BACK_FLAG, null, null);
   });
-  window.history.pushState(BACK_FLAG, null, null);
+  for (let i = 0; i < 5; ++i) {
+    window.history.pushState(BACK_FLAG, null, null);
+  }
 });
 
 window.addEventListener('load', () => track('LOAD_GAME_PAGE'));
