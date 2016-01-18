@@ -20,7 +20,7 @@ const isQuestionValid = (bankSize, seenQuestions, question) => {
   let valid;
   try {
     valid = question.value &&
-      question.value >= 600 &&
+      question.value >= 400 &&
       question.value <= 1600 &&
       question.value !== 1000 &&
       question.answer.length &&
