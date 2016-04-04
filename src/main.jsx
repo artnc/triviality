@@ -157,6 +157,7 @@ const pushKonami = (keyCode) => {
 window.tvMode = navigator.userAgent.indexOf('AmazonWebAppPlatform') !== -1;
 window.tvMode && window.addEventListener('load', () => {
   console.log('Amazon Fire TV mode enabled.');
+  document.body.classList.add('dark');
   const BACK_FLAG = 'backhandler';
   window.addEventListener('popstate', () => {
     if (window.history.state === BACK_FLAG) {
