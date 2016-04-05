@@ -1,4 +1,4 @@
-*.css
 *.sublime-workspace
 /node_modules
-bundle.js
+dist/**/*.css
+dist/**/bundle.js
