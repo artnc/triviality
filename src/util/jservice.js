@@ -127,7 +127,7 @@ const getRawQuestion = (bankSize, seenQuestions, callback) => {
   const retry = () => window.setTimeout(() => (
     getRawQuestion(bankSize, seenQuestions, callback)
   ), 125);
-  http.getJSON('http://jservice.io/api/random', data => {
+  http.getJSON('https://jservice.io/api/random', data => {
     if (data === null) {
       console.log('Call to jService API failed. Retry scheduled.');
       retry();
