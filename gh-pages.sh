@@ -1,7 +1,10 @@
 #!/bin/sh
 # Compiles frontend assets and publishes to GitHub Pages.
 
+set -eu
+
 git checkout -b gh-pages
+npm install
 NODE_ENV=production webpack -p
 cp -a dist/. .
 git add -A
