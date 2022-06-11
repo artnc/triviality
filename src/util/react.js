@@ -1,5 +1,5 @@
-import React from 'react';
-import PureRenderMixin from 'react-addons-pure-render-mixin';
+import React from "react";
+import PureRenderMixin from "react-addons-pure-render-mixin";
 
 export const createPureComponent = data => {
   data.mixins = [PureRenderMixin];

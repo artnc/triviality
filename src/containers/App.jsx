@@ -1,28 +1,18 @@
-import classNames from 'classnames';
-import React from 'react';
-import {connect} from 'react-redux';
+import classNames from "classnames";
+import React from "react";
+import { connect } from "react-redux";
 
-import {
-  addTile,
-  hydrateNewQuestion,
-  removeTile,
-  useHint
-} from 'actions';
-import {Bank} from 'components/Bank';
-import {Guess} from 'components/Guess';
-import {Prompt} from 'components/Prompt';
-import {QuestionMetadata} from 'components/QuestionMetadata';
-import styles from 'styles/App.scss';
-import {exit} from 'util/navigation';
+import { addTile, hydrateNewQuestion, removeTile, useHint } from "actions";
+import { Bank } from "components/Bank";
+import { Guess } from "components/Guess";
+import { Prompt } from "components/Prompt";
+import { QuestionMetadata } from "components/QuestionMetadata";
+import styles from "styles/App.scss";
+import { exit } from "util/navigation";
 
 const App = React.createClass({
   render() {
-    const {
-      currentQuestion,
-      dispatch,
-      hints,
-      seenQuestions
-    } = this.props;
+    const { currentQuestion, dispatch, hints, seenQuestions } = this.props;
 
     const {
       category,
@@ -32,19 +22,16 @@ const App = React.createClass({
       selectedTileId,
       solutionRuns,
       solved,
-      tiles
+      tiles,
     } = currentQuestion ? currentQuestion.toObject() : {};
 
     solved && dispatch(hydrateNewQuestion(false));
 
     return (
       <div
-        className={classNames(
-          styles.app,
-          {
-            [styles.hidden]: !category
-          }
-        )}
+        className={classNames(styles.app, {
+          [styles.hidden]: !category,
+        })}
       >
         <QuestionMetadata
           category={category}
@@ -79,12 +66,12 @@ const App = React.createClass({
         />
       </div>
     );
-  }
+  },
 });
 
 const mapStateToProps = state => ({
-  currentQuestion: state.get('currentQuestion'),
-  hints: state.get('hints'),
-  seenQuestions: state.get('seenQuestions')
+  currentQuestion: state.get("currentQuestion"),
+  hints: state.get("hints"),
+  seenQuestions: state.get("seenQuestions"),
 });
 export default connect(mapStateToProps)(App);

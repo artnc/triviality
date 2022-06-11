@@ -17,12 +17,12 @@ const ajax = (method, url, callback, responseFormatter) => {
   xhr.send();
 };
 
-const get = (url, callback) => ajax('GET', url, callback, null);
-const getJSON = (url, callback) => ajax('GET', url, callback, JSON.parse);
+const get = (url, callback) => ajax("GET", url, callback, null);
+const getJSON = (url, callback) => ajax("GET", url, callback, JSON.parse);
 
 const http = {
   ajax,
   get,
-  getJSON
+  getJSON,
 };
 export default http;

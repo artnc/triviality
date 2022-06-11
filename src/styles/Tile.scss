@@ -1,4 +1,4 @@
-@import 'variables';
+@import "variables";
 
 $tile-size: 6.4vmin;
 
@@ -7,7 +7,7 @@ $tile-size: 6.4vmin;
   border-radius: 999px;
   cursor: pointer;
   display: inline-block;
-  font-family: 'Inconsolata', monospace;
+  font-family: "Inconsolata", monospace;
   height: $tile-size;
   width: $tile-size;
 }
@@ -23,4 +23,3 @@ $tile-size: 6.4vmin;
     opacity: 0.2;
   }
 }
-

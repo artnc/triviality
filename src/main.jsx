@@ -1,30 +1,24 @@
-import 'babel-polyfill';
+import "babel-polyfill";
 
-import Immutable from 'immutable';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {Provider} from 'react-redux';
+import Immutable from "immutable";
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
 
-import {
-  addTile,
-  initState,
-  removeTile,
-  selectTile,
-  useHint
-} from 'actions';
+import { addTile, initState, removeTile, selectTile, useHint } from "actions";
 import {
   BANK_EXTRAS_ROW,
   EXIT_TILE_ID,
   HINT_TILE_ID,
   GRID_HEIGHT,
-  GRID_WIDTH
-} from 'constants';
-import App from 'containers/App';
-import rootReducer from 'reducers';
-import createStoreWithMiddleware from 'store';
-import 'styles/global.scss';
-import {exit} from 'util/navigation';
-import {track} from 'util/tracking';
+  GRID_WIDTH,
+} from "constants";
+import App from "containers/App";
+import rootReducer from "reducers";
+import createStoreWithMiddleware from "store";
+import "styles/global.scss";
+import { exit } from "util/navigation";
+import { track } from "util/tracking";
 
 /* Initialize Redux */
 
@@ -37,22 +31,24 @@ ReactDOM.render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 /* Add global event listeners */
 
-document.addEventListener('keydown', e => {
+document.addEventListener("keydown", e => {
   const keyCode = e.which || e.keyCode || 0;
   let eventHandled = true;
-  const state = store.getState().get('currentQuestion', Immutable.Map({}));
+  const state = store.getState().get("currentQuestion", Immutable.Map({}));
   switch (keyCode) {
-    case 8: { // Backspace
+    case 8: {
+      // Backspace
       store.dispatch(removeTile());
       break;
     }
-    case 13: { // Enter
-      const selectedTileId = state.get('selectedTileId');
+    case 13: {
+      // Enter
+      const selectedTileId = state.get("selectedTileId");
       switch (selectedTileId) {
         case EXIT_TILE_ID: {
           exit();
@@ -72,8 +68,9 @@ document.addEventListener('keydown', e => {
     case 37: // Left
     case 38: // Up
     case 39: // Right
-    case 40: { // Down
-      const selectedTileId = state.get('selectedTileId');
+    case 40: {
+      // Down
+      const selectedTileId = state.get("selectedTileId");
       let x, y, nextTileId;
 
       if (selectedTileId === EXIT_TILE_ID) {
@@ -90,11 +87,15 @@ document.addEventListener('keydown', e => {
         } else if (keyCode === 39) {
           nextTileId = EXIT_TILE_ID;
         }
-      } else if (selectedTileId === BANK_EXTRAS_ROW * GRID_WIDTH &&
-        keyCode === 37) {
+      } else if (
+        selectedTileId === BANK_EXTRAS_ROW * GRID_WIDTH &&
+        keyCode === 37
+      ) {
         nextTileId = EXIT_TILE_ID;
-      } else if (selectedTileId === (BANK_EXTRAS_ROW + 1) * GRID_WIDTH - 1 &&
-        keyCode === 39) {
+      } else if (
+        selectedTileId === (BANK_EXTRAS_ROW + 1) * GRID_WIDTH - 1 &&
+        keyCode === 39
+      ) {
         nextTileId = HINT_TILE_ID;
       } else {
         // Get current tile position
@@ -103,7 +104,7 @@ document.addEventListener('keydown', e => {
 
         // Calculate next tile position
         x += (keyCode % 2) * (keyCode - 38);
-        y += (1 - keyCode % 2) * (keyCode - 39);
+        y += (1 - (keyCode % 2)) * (keyCode - 39);
 
         // Handle wrapping
         x = (x + GRID_WIDTH) % GRID_WIDTH;
@@ -128,16 +129,23 @@ document.addEventListener('keydown', e => {
 
       // Alphanumeric
       const char = String.fromCharCode(keyCode);
-      if (!(state.get('tileString').includes(char) &&
-        state.get('guessTileIds').includes(null))) {
+      if (
+        !(
+          state.get("tileString").includes(char) &&
+          state.get("guessTileIds").includes(null)
+        )
+      ) {
         break;
       }
-      state.get('tiles').toJS().some((tile, id) => {
-        if (!tile.used && tile.char === char) {
-          store.dispatch(addTile(id));
-          return true;
-        }
-      });
+      state
+        .get("tiles")
+        .toJS()
+        .some((tile, id) => {
+          if (!tile.used && tile.char === char) {
+            store.dispatch(addTile(id));
+            return true;
+          }
+        });
       break;
     }
   }
@@ -145,30 +153,31 @@ document.addEventListener('keydown', e => {
 });
 
 // Konami code easter egg
-const KONAMI = '3838404037393739';
-const konamiQueue = '00000000'.split('');
-const pushKonami = (keyCode) => {
+const KONAMI = "3838404037393739";
+const konamiQueue = "00000000".split("");
+const pushKonami = keyCode => {
   konamiQueue.push(keyCode);
   konamiQueue.shift();
-  konamiQueue.join('') === KONAMI && document.body.classList.toggle('dark');
+  konamiQueue.join("") === KONAMI && document.body.classList.toggle("dark");
 };
 
 // From https://developer.amazon.com/public/solutions/platforms/webapps/faq
-window.tvMode = navigator.userAgent.indexOf('AmazonWebAppPlatform') !== -1;
-window.tvMode && window.addEventListener('load', () => {
-  console.log('Amazon Fire TV mode enabled.');
-  document.body.classList.add('dark');
-  const BACK_FLAG = 'backhandler';
-  window.addEventListener('popstate', () => {
-    if (window.history.state === BACK_FLAG) {
-      return;
+window.tvMode = navigator.userAgent.indexOf("AmazonWebAppPlatform") !== -1;
+window.tvMode &&
+  window.addEventListener("load", () => {
+    console.log("Amazon Fire TV mode enabled.");
+    document.body.classList.add("dark");
+    const BACK_FLAG = "backhandler";
+    window.addEventListener("popstate", () => {
+      if (window.history.state === BACK_FLAG) {
+        return;
+      }
+      store.dispatch(removeTile());
+      window.history.pushState(BACK_FLAG, null, null);
+    });
+    for (let i = 0; i < 5; ++i) {
+      window.history.pushState(BACK_FLAG, null, null);
     }
-    store.dispatch(removeTile());
-    window.history.pushState(BACK_FLAG, null, null);
   });
-  for (let i = 0; i < 5; ++i) {
-    window.history.pushState(BACK_FLAG, null, null);
-  }
-});
 
-window.addEventListener('load', () => track('LOAD_GAME_PAGE'));
+window.addEventListener("load", () => track("LOAD_GAME_PAGE"));

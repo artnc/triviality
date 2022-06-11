@@ -1,17 +1,17 @@
-import classNames from 'classnames';
-import React from 'react';
+import classNames from "classnames";
+import React from "react";
 
-import {Tile} from 'components/Tile';
+import { Tile } from "components/Tile";
 import {
   BANK_EXTRAS_ROW,
   EXIT_TILE_ID,
   HINT_TILE_ID,
   GRID_HEIGHT,
   GRID_WIDTH,
-  SIDE_PADDING
-} from 'constants';
-import styles from 'styles/Bank.scss';
-import {createPureComponent} from 'util/react';
+  SIDE_PADDING,
+} from "constants";
+import styles from "styles/Bank.scss";
+import { createPureComponent } from "util/react";
 
 export const Bank = createPureComponent({
   render() {
@@ -22,26 +22,29 @@ export const Bank = createPureComponent({
       onTileClick,
       selectedTileId,
       solved,
-      tiles
+      tiles,
     } = this.props;
 
     // Construct cell grid using tiles' x and y coordinates
     const paddedWidth = GRID_WIDTH + SIDE_PADDING * 2;
-    const grid = Array(GRID_HEIGHT).fill().map(() => Array(paddedWidth));
+    const grid = Array(GRID_HEIGHT)
+      .fill()
+      .map(() => Array(paddedWidth));
     let x, y;
-    tiles && tiles.forEach((tile, i) => {
-      x = i % GRID_WIDTH + SIDE_PADDING;
-      y = Math.floor(i / GRID_WIDTH);
-      grid[y][x] = (
-        <td key={y * paddedWidth + x}>
-          <Tile
-            onTileClick={onTileClick}
-            selectedTileId={selectedTileId}
-            tile={tile.toJS()}
-          />
-        </td>
-      );
-    });
+    tiles &&
+      tiles.forEach((tile, i) => {
+        x = (i % GRID_WIDTH) + SIDE_PADDING;
+        y = Math.floor(i / GRID_WIDTH);
+        grid[y][x] = (
+          <td key={y * paddedWidth + x}>
+            <Tile
+              onTileClick={onTileClick}
+              selectedTileId={selectedTileId}
+              tile={tile.toJS()}
+            />
+          </td>
+        );
+      });
 
     // Add special tiles (exit, hint)
     let start, end;
@@ -49,46 +52,49 @@ export const Bank = createPureComponent({
       for (let j = 0; j < SIDE_PADDING; ++j) {
         start = null;
         if (i === BANK_EXTRAS_ROW && j === 0) {
-          start = <Tile
-            hoverText = 'Quit'
-            onTileClick={onExitClick}
-            selectedTileId={selectedTileId}
-            tile={({
-              char: '\u00d7',
-              id: EXIT_TILE_ID,
-              used: false
-            })}
-          />;
+          start = (
+            <Tile
+              hoverText="Quit"
+              onTileClick={onExitClick}
+              selectedTileId={selectedTileId}
+              tile={{
+                char: "\u00d7",
+                id: EXIT_TILE_ID,
+                used: false,
+              }}
+            />
+          );
         }
         grid[i][j] = <td key={i * paddedWidth + j}>{start}</td>;
       }
       for (let j = GRID_WIDTH + SIDE_PADDING; j < paddedWidth; ++j) {
         end = null;
         if (i === BANK_EXTRAS_ROW && j === paddedWidth - 1) {
-          end = <Tile
-            hoverText = 'Use a hint'
-            onTileClick={onHintClick}
-            selectedTileId={selectedTileId}
-            tile={({
-              char: '?',
-              id: HINT_TILE_ID,
-              used: !(hints && Math.floor(hints))
-            })}
-          />;
+          end = (
+            <Tile
+              hoverText="Use a hint"
+              onTileClick={onHintClick}
+              selectedTileId={selectedTileId}
+              tile={{
+                char: "?",
+                id: HINT_TILE_ID,
+                used: !(hints && Math.floor(hints)),
+              }}
+            />
+          );
         }
         grid[i][j] = <td key={i * paddedWidth + j}>{end}</td>;
       }
     }
 
     return (
-      <table className={classNames(
-        styles.table,
-        {[styles.solved]: solved}
-      )}>
+      <table className={classNames(styles.table, { [styles.solved]: solved })}>
         <tbody>
-          {grid.map((row, i) => <tr key={i}>{row}</tr>)}
+          {grid.map((row, i) => (
+            <tr key={i}>{row}</tr>
+          ))}
         </tbody>
       </table>
     );
-  }
+  },
 });
