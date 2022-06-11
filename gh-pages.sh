@@ -5,7 +5,7 @@ set -eu
 
 git checkout -b gh-pages
 npm install
-NODE_ENV=production webpack -p
+NODE_ENV=production node_modules/.bin/webpack -p
 cp -a dist/. .
 git add -A
 git commit -m "Compile assets for GitHub Pages"
