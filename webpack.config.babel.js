@@ -36,7 +36,7 @@ export default {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loaders: [...envConfig.jsLoaders, "babel", "eslint"],
+        loaders: [...envConfig.jsLoaders, "babel"],
       },
       {
         test: /\.scss$/,
