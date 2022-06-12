@@ -4,8 +4,12 @@
 set -eu
 
 git checkout -b gh-pages
-npm install
-NODE_ENV=production node_modules/.bin/webpack -p
+docker run \
+  -e NODE_ENV=production \
+  -v "${PWD}:/code" \
+  -v "/code/node_modules" \
+  "$(docker build -q -t artnc/triviality .)" \
+  node_modules/.bin/webpack -p
 cp -a dist/. .
 git add -A
 git commit -m "Compile assets for GitHub Pages"
