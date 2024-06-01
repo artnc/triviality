@@ -28,6 +28,8 @@ const isQuestionValid = (bankSize, seenQuestions, question) => {
       question.question.length &&
       lowercasedClueText.length <= 140 &&
       question.answer.match(/\w/g).length <= bankSize &&
+      // Avoid multiple-choice clues because they're too easy
+      !lowercasedClueText.includes(question.answer.toLowerCase()) &&
       !BAD_STRINGS.some(s => lowercasedClueText.includes(s)) &&
       !seenQuestions.includes(question.id);
   } catch (e) {
