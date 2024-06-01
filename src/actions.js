@@ -1,7 +1,7 @@
 import Immutable from "immutable";
 
 import { GRID_HEIGHT, GRID_WIDTH } from "constants";
-import { getQuestion } from "util/jservice";
+import { getQuestion } from "util/api";
 import { LOCALSTORAGE, getItem } from "util/storage";
 import { track } from "util/tracking";
 
