@@ -88,6 +88,7 @@ const preprocessQuestion = question => {
       .replace(/\(.+\)/g, "")
       .replace(/^an? /, "")
       .replace(/\s+/g, " ")
+      .replace(/</g, "") // IDK why Cluebase data sometimes has trailing "<"
       .trim(),
     question: normalizeString(question.question).replace(/\s+/g, " ").trim(),
   });
