@@ -1,10 +1,4 @@
 {
-  "name": "trivia",
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "author": "",
-  "license": "BSD",
   "devDependencies": {
     "babel-cli": "6.3.17",
     "babel-core": "6.3.21",
