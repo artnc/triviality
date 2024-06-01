@@ -10,9 +10,7 @@ const DO_NOT_TRACK =
 if (DO_NOT_TRACK) {
   setItem(LOCALSTORAGE.DNT, true);
 } else {
-  window.amplitude.init(AMPLITUDE_API_KEY, null, {
-    includeReferrer: true,
-  });
+  window.amplitude.init(AMPLITUDE_API_KEY, null, { includeReferrer: true });
 }
 
 export const track = (eventName, properties = {}) => {
