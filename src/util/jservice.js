@@ -26,7 +26,6 @@ const isQuestionValid = (bankSize, seenQuestions, question) => {
       question.value !== 1000 &&
       question.answer.length &&
       question.question.length &&
-      question.invalid_count === null &&
       lowercasedClueText.length <= 140 &&
       question.answer.match(/\w/g).length <= bankSize &&
       !BAD_STRINGS.some(s => lowercasedClueText.includes(s)) &&
@@ -61,9 +60,24 @@ export const fixPunctuation = text =>
     .replace(/\s+/g, " ")
     .trim();
 
-const DOUBLED_PRICES_AIRDATE = "2001-11-26T12:00:00.000Z";
 const preprocessQuestion = question => {
-  if (question.airdate < DOUBLED_PRICES_AIRDATE) {
+  // Transform Cluebase response into jService response format
+  question = {
+    answer: question.response,
+    category: {
+      title: question.category,
+    },
+    id: question.id,
+    question: question.clue,
+    value: question.value,
+  };
+
+  if ([100, 300, 500].includes(question.value)) {
+    // TODO: Normalize clue values based on the threshold date 2001-11-26,
+    // when Jeopardy doubled all clue values. jService included airdate in
+    // clue API repsonses, but Cluebase requires an additional API call for
+    // it :/ For now we just normalize only clues whose values imply that
+    // they must have aired before the threshold date
     question.value *= 2;
   }
   const processedQuestion = Object.assign({}, question, {
@@ -128,13 +142,19 @@ const getRawQuestion = (bankSize, seenQuestions, callback) => {
       () => getRawQuestion(bankSize, seenQuestions, callback),
       125
     );
-  http.getJSON("https://jservice.io/api/random", data => {
+  const url =
+    "https://corsproxy.io/?" +
+    encodeURIComponent(
+      // Add timestamp to defeat corsproxy.io caching
+      "http://cluebase.lukelav.in/clues/random?_=" + Date.now()
+    );
+  http.getJSON(url, data => {
     if (data === null) {
       console.log("Call to jService API failed. Retry scheduled.");
       retry();
       return;
     }
-    const question = preprocessQuestion(data[0]);
+    const question = preprocessQuestion(data.data[0]);
     if (!isQuestionValid(bankSize, seenQuestions, question)) {
       console.log(
         "Call to jService API returned invalid data. Retry scheduled.",
