@@ -47,10 +47,11 @@ export const hydrateNewQuestion = initForNewUser => (dispatch, getState) => {
     track("GET_QUESTION");
     return dispatch(hydrate(hydrateState, true));
   };
-  getQuestion(bankSize, seenQuestions, question => {
+  (async () => {
+    const question = await getQuestion(bankSize, seenQuestions);
     currentQuestion = question;
     !waiting && dispatchHydrate();
-  });
+  })();
   delay &&
     window.setTimeout(() => {
       if (currentQuestion) {
