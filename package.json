@@ -3,9 +3,6 @@
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "mocha --compilers js:babel-core/register --recursive -w --watch-extensions jsx"
-  },
   "author": "",
   "license": "BSD",
   "devDependencies": {
@@ -20,7 +17,6 @@
     "css-loader": "0.23.1",
     "cssnano": "3.4.0",
     "extract-text-webpack-plugin": "0.9.1",
-    "mocha": "2.3.4",
     "node-sass": "3.8.0",
     "normalize.css": "3.0.3",
     "postcss-loader": "0.8.0",
