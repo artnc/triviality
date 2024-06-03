@@ -1,0 +1,25 @@
+@import "npm:normalize.css";
+@import "variables";
+
+@import url(https://fonts.googleapis.com/css?family=Alegreya:400,400italic,700);
+@import url(https://fonts.googleapis.com/css?family=Inconsolata:400);
+
+html {
+  font-family: "Alegreya", serif;
+  font-size: $normal-font-size;
+  height: 100%;
+}
+
+body {
+  background: $background-color;
+  color: $text-color;
+  cursor: default;
+  height: 100%;
+  position: relative;
+  user-select: none;
+
+  &.dark {
+    background: #000;
+    color: #888;
+  }
+}

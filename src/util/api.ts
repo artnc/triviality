@@ -1,4 +1,4 @@
-const normalizeString = html => {
+const normalizeString = (html: string) => {
   const node = document.createElement("div");
   node.innerHTML = html;
   return (node.textContent || node.innerText || "")
@@ -18,8 +18,8 @@ const normalizeString = html => {
 };
 
 // Fisher-Yates
-const shuffleString = string => {
-  const a = string.split("");
+const shuffleString = (str: string) => {
+  const a = str.split("");
   const n = a.length;
   let j;
   for (let i = n - 1; i; --i) {
@@ -32,21 +32,34 @@ const shuffleString = string => {
 const LETTERS = `${"AEHINORST".repeat(3)}${"BCDFGKLMPUVWY".repeat(2)}JXQZ`;
 const DIGITS = "0123456789";
 
-export const getQuestion = (bankSize, seenQuestions, callback) => {
+export const getQuestion = (
+  bankSize: number,
+  seenQuestions: number[],
+  callback: any,
+) => {
   const retry = () =>
     window.setTimeout(
       () => getQuestion(bankSize, seenQuestions, callback),
-      125
+      125,
     );
   const url =
     "https://corsproxy.io/?" +
     encodeURIComponent(
       // Add timestamp to defeat corsproxy.io caching
-      "http://cluebase.lukelav.in/clues/random?_=" + Date.now()
+      "http://cluebase.lukelav.in/clues/random?_=" + Date.now(),
     );
+  interface Response {
+    data: {
+      category: string;
+      clue: string;
+      id: number;
+      response: string;
+      value: number;
+    }[];
+  }
   fetch(url)
     .then(response => response.json())
-    .then(({ data: [question] }) => {
+    .then(({ data: [question] }: Response) => {
       let {
         category,
         clue: prompt,
@@ -78,17 +91,17 @@ export const getQuestion = (bankSize, seenQuestions, callback) => {
         difficulty <= 1600 &&
         difficulty !== 1000 &&
         prompt.length <= 140 &&
-        solution.match(/\w/g).length <= bankSize &&
+        solution.match(/\w/g)!.length <= bankSize &&
         // Avoid multiple-choice clues because they're too easy
         !prompt.toLowerCase().includes(solution.toLowerCase()) &&
         !/\((cheryl|im|jimmy|jon|kelly|sarah|sofia) |(audio|video) clue|clue crew|following clip|(heard|seen) here/i.test(
-          prompt
+          prompt,
         ) &&
         !seenQuestions.includes(id);
       if (!isValid) {
         console.log(
           "API call returned invalid data. Retry scheduled.",
-          question
+          question,
         );
         retry();
         return;
@@ -97,7 +110,7 @@ export const getQuestion = (bankSize, seenQuestions, callback) => {
       console.log(`API call succeeded. Solution: ${solution}`);
       solution = solution.toUpperCase();
       const tileString = (() => {
-        const solutionChars = solution.match(/\w/g);
+        const solutionChars = solution.match(/\w/g)!;
         let tileString = solutionChars.join("");
         const digitRatio =
           (tileString.match(/\d/g) || []).length / tileString.length;

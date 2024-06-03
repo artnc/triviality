@@ -1,37 +1,33 @@
-import "babel-polyfill";
-
-import Immutable from "immutable";
-import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
+import { applyMiddleware, createStore } from "redux";
+import { thunk } from "redux-thunk";
 
-import { addTile, initState, removeTile, selectTile, useHint } from "actions";
+import { addTile, initState, removeTile, selectTile, useHint } from "./actions";
 import {
   BANK_EXTRAS_ROW,
   EXIT_TILE_ID,
   HINT_TILE_ID,
   GRID_HEIGHT,
   GRID_WIDTH,
-} from "constants";
-import App from "containers/App";
-import rootReducer from "reducers";
-import createStoreWithMiddleware from "store";
-import "styles/global.scss";
-import { exit } from "util/navigation";
-import { track } from "util/tracking";
+} from "./constants";
+import App from "./containers/App";
+import rootReducer, { State } from "./reducers";
+import "./global.scss";
+import { exit } from "./util/navigation";
+import { track } from "./util/tracking";
 
 /* Initialize Redux */
 
-const store = createStoreWithMiddleware(rootReducer);
+const store = createStore<State, any>(rootReducer, applyMiddleware(thunk));
 store.dispatch(initState());
 
 /* Initialize React */
 
-ReactDOM.render(
+createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById("root")
 );
 
 /* Add global event listeners */
@@ -39,7 +35,10 @@ ReactDOM.render(
 document.addEventListener("keydown", e => {
   const keyCode = e.which || e.keyCode || 0;
   let eventHandled = true;
-  const state = store.getState().get("currentQuestion", Immutable.Map({}));
+  const { currentQuestion } = store.getState();
+  if (!currentQuestion) {
+    return;
+  }
   switch (keyCode) {
     case 8: {
       // Backspace
@@ -48,7 +47,7 @@ document.addEventListener("keydown", e => {
     }
     case 13: {
       // Enter
-      const selectedTileId = state.get("selectedTileId");
+      const selectedTileId = currentQuestion.selectedTileId;
       switch (selectedTileId) {
         case EXIT_TILE_ID: {
           exit();
@@ -70,7 +69,7 @@ document.addEventListener("keydown", e => {
     case 39: // Right
     case 40: {
       // Down
-      const selectedTileId = state.get("selectedTileId");
+      const selectedTileId = currentQuestion.selectedTileId;
       let x, y, nextTileId;
 
       if (selectedTileId === EXIT_TILE_ID) {
@@ -131,21 +130,18 @@ document.addEventListener("keydown", e => {
       const char = String.fromCharCode(keyCode);
       if (
         !(
-          state.get("tileString").includes(char) &&
-          state.get("guessTileIds").includes(null)
+          currentQuestion.tileString.includes(char) &&
+          currentQuestion.guessTileIds.includes(null)
         )
       ) {
         break;
       }
-      state
-        .get("tiles")
-        .toJS()
-        .some((tile, id) => {
-          if (!tile.used && tile.char === char) {
-            store.dispatch(addTile(id));
-            return true;
-          }
-        });
+      currentQuestion.tiles.some((tile, id) => {
+        if (!tile.used && tile.char === char) {
+          store.dispatch(addTile(id));
+          return true;
+        }
+      });
       break;
     }
   }
@@ -155,8 +151,8 @@ document.addEventListener("keydown", e => {
 // Konami code easter egg
 const KONAMI = "3838404037393739";
 const konamiQueue = "00000000".split("");
-const pushKonami = keyCode => {
-  konamiQueue.push(keyCode);
+const pushKonami = (keyCode: number) => {
+  konamiQueue.push(`${keyCode}`);
   konamiQueue.shift();
   konamiQueue.join("") === KONAMI && document.body.classList.toggle("dark");
 };
@@ -173,10 +169,10 @@ window.tvMode &&
         return;
       }
       store.dispatch(removeTile());
-      window.history.pushState(BACK_FLAG, null, null);
+      window.history.pushState(BACK_FLAG, "", null);
     });
     for (let i = 0; i < 5; ++i) {
-      window.history.pushState(BACK_FLAG, null, null);
+      window.history.pushState(BACK_FLAG, "", null);
     }
   });
 
