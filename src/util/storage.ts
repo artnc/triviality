@@ -3,9 +3,9 @@ export const LOCALSTORAGE = {
   STATE: "triviality_state",
 };
 
-export const getItem = key =>
+export const getItem = (key: string) =>
   key in window.localStorage ? JSON.parse(window.localStorage[key]) : undefined;
 
-export const setItem = (key, value) => {
+export const setItem = (key: string, value: any) => {
   window.localStorage[key] = JSON.stringify(value);
 };
