@@ -86,14 +86,17 @@ export const getQuestion = (
       category = normalizeString(category);
 
       // Check question validity
+      solution = solution.toUpperCase();
+      const solutionChars = solution.match(/\w/g) ?? [];
       const isValid =
         difficulty >= 400 &&
         difficulty <= 1600 &&
         difficulty !== 1000 &&
         prompt.length <= 140 &&
-        solution.match(/\w/g)!.length <= bankSize &&
+        solutionChars.length > 1 &&
+        solutionChars.length <= bankSize &&
         // Avoid multiple-choice clues because they're too easy
-        !prompt.toLowerCase().includes(solution.toLowerCase()) &&
+        !prompt.toUpperCase().includes(solution) &&
         !/\((cheryl|im|jimmy|jon|kelly|sarah|sofia) |(audio|video) clue|clue crew|following clip|(heard|seen) here/i.test(
           prompt,
         ) &&
@@ -108,9 +111,7 @@ export const getQuestion = (
       }
 
       console.log(`API call succeeded. Solution: ${solution}`);
-      solution = solution.toUpperCase();
       const tileString = (() => {
-        const solutionChars = solution.match(/\w/g)!;
         let tileString = solutionChars.join("");
         const digitRatio =
           (tileString.match(/\d/g) || []).length / tileString.length;
