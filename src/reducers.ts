@@ -18,7 +18,7 @@ export interface Question {
   id: number;
   prompt: string;
   selectedTileId: any;
-  solutionRuns: (number | " ")[];
+  solutionRuns: (number | string)[];
   solved: boolean;
   tileString: string;
   tiles: Tile[];
