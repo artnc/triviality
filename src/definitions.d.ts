@@ -4,7 +4,7 @@ interface Window {
 }
 
 // https://github.com/parcel-bundler/parcel/issues/6758#issuecomment-1645890712
-declare module '*.module.scss' {
+declare module "*.module.scss" {
   const classNames: { [className: string]: string };
   export = classNames;
 }

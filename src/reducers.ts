@@ -46,8 +46,8 @@ const playNewTileSound = (
     state.solved
       ? SOUNDS.WIN
       : state.guessTileIds.includes(null)
-      ? defaultSound
-      : SOUNDS.ERROR,
+        ? defaultSound
+        : SOUNDS.ERROR,
   );
 const currentQuestion = (
   state: NonNullable<State["currentQuestion"]>,
