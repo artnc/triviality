@@ -42,65 +42,123 @@ export const getQuestion = async (
     "https://corsproxy.io/?" +
     encodeURIComponent(
       // Add timestamp to defeat corsproxy.io caching
-      "http://cluebase.lukelav.in/clues/random?_=" + Date.now(),
+      // TODO: Softcode highest extant game ID
+      `https://j-archive.com/showgame.php?game_id=${
+        Math.floor(Math.random() * 9262) + 1
+      }&_=${Date.now()}`,
     );
-  const {
-    data: [question],
-  }: {
-    data: {
-      category: string;
-      clue: string;
-      id: number;
-      response: string;
-      value: number;
-    }[];
-  } = await (await fetch(url)).json();
-  let {
-    category,
-    clue: prompt,
-    id,
-    response: solution,
-    value: difficulty,
-  } = question;
-  if ([100, 300, 500].includes(difficulty)) {
-    // TODO: Normalize clue values based on the threshold date 2001-11-26,
-    // when Jeopardy doubled all clue values. jService included airdate in
-    // clue API repsonses, but Cluebase requires an additional API call for
-    // it :/ For now we just normalize only clues whose values imply that
-    // they must have aired before the threshold date
-    difficulty *= 2;
-  }
-  solution = normalizeString(solution)
-    .split("/")[0]
-    .replace(/\(.+\)/g, "")
-    .replace(/^an? /, "")
-    .replace(/\s+/g, " ")
-    .replace(/</g, "") // IDK why Cluebase data sometimes has trailing "<"
-    .trim();
-  prompt = normalizeString(prompt).replace(/\s+/g, " ").trim();
-  category = normalizeString(category);
 
-  // Check question validity
-  solution = solution.toUpperCase();
-  const solutionChars = solution.match(/\w/g) ?? [];
-  const isValid =
-    difficulty >= 400 &&
-    difficulty <= 1600 &&
-    difficulty !== 1000 &&
-    prompt.length <= 140 &&
-    solutionChars.length > 1 &&
-    solutionChars.length <= bankSize &&
-    // Avoid multiple-choice clues because they're too easy
-    !prompt.toUpperCase().includes(solution) &&
-    !/\((cheryl|im|jimmy|jon|kelly|sarah|sofia) |(audio|video) clue|clue crew|following clip|(heard|seen) here/i.test(
-      prompt,
-    ) &&
-    !seenQuestions.includes(id);
-  if (!isValid) {
-    console.log("API call returned invalid data. Retry scheduled.", question);
+  // Parse show number from HTML
+  const $doc = new DOMParser().parseFromString(
+    await (await fetch(url)).text(),
+    "text/html",
+  );
+  const showNumber = parseInt(
+    $doc.querySelector("h1")?.textContent?.match(/Show #(\d+)/)?.[1] ?? "-1",
+  );
+
+  // Find all clue elements
+  const $$clues = Array.from(
+    $doc.querySelectorAll('td[class="clue_text"][id*="clue_J_"]'),
+  ).filter((el, i) => i % 2 === 0);
+  if (!$$clues.length) {
+    console.log("No clues found in HTML. Retry scheduled.");
     await new Promise(resolve => setTimeout(resolve, 125));
     return await getQuestion(bankSize, seenQuestions);
   }
+
+  // Process all clues to find usable ones
+  const usableClues = [];
+  for (const $clue of $$clues) {
+    const clueId = $clue.getAttribute("id");
+    const $response = $doc.getElementById(`${clueId}_r`);
+    if (!(clueId && $response)) {
+      continue;
+    }
+
+    // Parse HTML
+    const category = normalizeString(
+      (() => {
+        const categoryMatch = clueId.match(/clue_J_(\d+)_/);
+        if (categoryMatch) {
+          const categoryNum = categoryMatch[1];
+          const $category =
+            $doc.querySelectorAll("td.category_name")[
+              parseInt(categoryNum) - 1
+            ];
+          if ($category) {
+            return $category.textContent?.trim();
+          }
+        }
+      })() ?? "",
+    );
+    const difficulty = (() => {
+      const valueMatch = $clue
+        .closest("table")
+        ?.querySelector(".clue_value")
+        ?.textContent?.trim()
+        ?.match(/\$(\d+)/);
+      const value = valueMatch ? parseInt(valueMatch[1]) : -1;
+      // https://j-archive.com/showgame.php?game_id=1062
+      return showNumber < 3966 ? value * 2 : value;
+    })();
+    const id = parseInt(
+      $response
+        .closest("table")
+        ?.querySelector('a[href*="suggestcorrection.php?clue_id="]')
+        ?.getAttribute("href")
+        ?.match(/clue_id=(\d+)/)?.[1] ?? "0",
+    );
+    const prompt = normalizeString($clue.textContent?.trim() ?? "")
+      .replace(/\s+/g, " ")
+      .trim();
+    const solution = normalizeString(
+      $response.querySelector("em.correct_response")?.textContent?.trim() ?? "",
+    )
+      .split("/")[0]
+      .replace(/\(.+\)/g, "")
+      .replace(/^an? /, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toUpperCase();
+
+    // Check question usability
+    const solutionChars = solution.match(/\w/g) ?? [];
+    if (
+      id &&
+      category &&
+      difficulty >= 400 &&
+      difficulty <= 1600 &&
+      prompt.length <= 140 &&
+      solutionChars.length > 1 &&
+      solutionChars.length <= bankSize &&
+      // Avoid multiple-choice clues because they're too easy
+      !prompt.toUpperCase().includes(solution) &&
+      !/\((cheryl|im|jimmy|jon|kelly|sarah|sofia) |(audio|video) clue|clue crew|following clip|(heard|seen) here/i.test(
+        prompt,
+      ) &&
+      !seenQuestions.includes(id)
+    ) {
+      usableClues.push({
+        category,
+        difficulty,
+        id,
+        prompt,
+        solution,
+        solutionChars,
+      });
+    }
+  }
+
+  // If no usable clues found, retry
+  console.log("Found", usableClues.length, "usable clues");
+  if (!usableClues.length) {
+    console.log("No usable clues found. Retry scheduled.");
+    await new Promise(resolve => setTimeout(resolve, 125));
+    return await getQuestion(bankSize, seenQuestions);
+  }
+  const { category, difficulty, id, prompt, solution, solutionChars } =
+    usableClues[Math.floor(Math.random() * usableClues.length)];
 
   console.log(`API call succeeded. Solution: ${solution}`);
   const tileString = (() => {
