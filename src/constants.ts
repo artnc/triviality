@@ -1,4 +1,4 @@
-export const EXIT_TILE_ID = "EXIT";
+export const REMOVE_TILE_ID = "REMOVE";
 export const HINT_TILE_ID = "HINT";
 
 export const GRID_HEIGHT = 3;

@@ -6,15 +6,14 @@ import { thunk } from "redux-thunk";
 import { addTile, initState, removeTile, selectTile, useHint } from "./actions";
 import {
   BANK_EXTRAS_ROW,
-  EXIT_TILE_ID,
   GRID_HEIGHT,
   GRID_WIDTH,
   HINT_TILE_ID,
+  REMOVE_TILE_ID,
 } from "./constants";
 import App from "./containers/App";
 import rootReducer, { State } from "./reducers";
 import "./global.scss";
-import { exit } from "./util/navigation";
 import { track } from "./util/tracking";
 
 /* Initialize Redux */
@@ -49,8 +48,8 @@ document.addEventListener("keydown", e => {
       // Enter
       const selectedTileId = currentQuestion.selectedTileId;
       switch (selectedTileId) {
-        case EXIT_TILE_ID: {
-          exit();
+        case REMOVE_TILE_ID: {
+          store.dispatch(removeTile());
           break;
         }
         case HINT_TILE_ID: {
@@ -74,7 +73,7 @@ document.addEventListener("keydown", e => {
       let x;
       let y;
 
-      if (selectedTileId === EXIT_TILE_ID) {
+      if (selectedTileId === REMOVE_TILE_ID) {
         nextTileId = selectedTileId;
         if (keyCode === 37) {
           nextTileId = HINT_TILE_ID;
@@ -86,13 +85,13 @@ document.addEventListener("keydown", e => {
         if (keyCode === 37) {
           nextTileId = (BANK_EXTRAS_ROW + 1) * GRID_WIDTH - 1;
         } else if (keyCode === 39) {
-          nextTileId = EXIT_TILE_ID;
+          nextTileId = REMOVE_TILE_ID;
         }
       } else if (
         selectedTileId === BANK_EXTRAS_ROW * GRID_WIDTH &&
         keyCode === 37
       ) {
-        nextTileId = EXIT_TILE_ID;
+        nextTileId = REMOVE_TILE_ID;
       } else if (
         selectedTileId === (BANK_EXTRAS_ROW + 1) * GRID_WIDTH - 1 &&
         keyCode === 39

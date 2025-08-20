@@ -14,7 +14,6 @@ import { Guess } from "../components/Guess";
 import { Prompt } from "../components/Prompt";
 import { QuestionMetadata } from "../components/QuestionMetadata";
 import * as styles from "./App.module.scss";
-import { exit } from "../util/navigation";
 
 const App = ({
   currentQuestion,
@@ -58,7 +57,7 @@ const App = ({
       />
       <Bank
         hints={hints}
-        onExitClick={exit}
+        onRemoveClick={() => dispatch(removeTile())}
         onHintClick={() => dispatch(useHint())}
         onTileClick={(tile: Tile) => dispatch(addTile(tile.id))}
         selectedTileId={selectedTileId}

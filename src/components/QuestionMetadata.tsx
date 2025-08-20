@@ -1,4 +1,4 @@
-import { EXIT_TILE_ID, HINT_TILE_ID } from "../constants";
+import { HINT_TILE_ID, REMOVE_TILE_ID } from "../constants";
 import * as styles from "./QuestionMetadata.module.scss";
 
 export const QuestionMetadata = ({
@@ -23,7 +23,7 @@ export const QuestionMetadata = ({
     children = `Question #${seenQuestions.length} solved! ${hintsMessage}`;
   } else {
     switch (selectedTileId) {
-      case EXIT_TILE_ID: {
+      case REMOVE_TILE_ID: {
         children =
           "Thanks for playing! " +
           `Question #${seenQuestions.length} will be saved.`;

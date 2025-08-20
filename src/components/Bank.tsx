@@ -3,10 +3,10 @@ import classNames from "classnames";
 import { TileUI } from "./TileUI";
 import {
   BANK_EXTRAS_ROW,
-  EXIT_TILE_ID,
   GRID_HEIGHT,
   GRID_WIDTH,
   HINT_TILE_ID,
+  REMOVE_TILE_ID,
   SIDE_PADDING,
 } from "../constants";
 import { Tile } from "../reducers";
@@ -14,7 +14,7 @@ import * as styles from "./Bank.module.scss";
 
 export const Bank = ({
   hints,
-  onExitClick,
+  onRemoveClick,
   onHintClick,
   onTileClick,
   selectedTileId,
@@ -22,7 +22,7 @@ export const Bank = ({
   tiles,
 }: {
   hints: number;
-  onExitClick: () => void;
+  onRemoveClick: () => void;
   onHintClick: () => void;
   onTileClick: (tile: Tile) => void;
   selectedTileId: number;
@@ -51,7 +51,7 @@ export const Bank = ({
       );
     });
 
-  // Add special tiles (exit, hint)
+  // Add special tiles (remove, hint)
   let end;
   let start;
   for (let i = 0; i < GRID_HEIGHT; ++i) {
@@ -61,9 +61,9 @@ export const Bank = ({
         start = (
           <TileUI
             hoverText="Quit"
-            onTileClick={onExitClick}
+            onTileClick={onRemoveClick}
             selectedTileId={selectedTileId}
-            tile={{ char: "\u00d7", id: EXIT_TILE_ID, used: false }}
+            tile={{ char: "\u00d7", id: REMOVE_TILE_ID, used: false }}
           />
         );
       }
