@@ -38,15 +38,13 @@ export const getQuestion = async (
   bankSize: number,
   seenQuestions: number[],
 ): Promise<Question> => {
-  const url =
-    "https://corsproxy.io/?" +
-    encodeURIComponent(
-      // Add timestamp to defeat corsproxy.io caching
-      // TODO: Softcode highest extant game ID
-      `https://j-archive.com/showgame.php?game_id=${
-        Math.floor(Math.random() * 9262) + 1
-      }&_=${Date.now()}`,
-    );
+  const url = `https://corsproxy.io/?${encodeURIComponent(
+    // Add timestamp to defeat corsproxy.io caching
+    // TODO: Softcode highest extant game ID
+    `https://j-archive.com/showgame.php?game_id=${
+      Math.floor(Math.random() * 9262) + 1
+    }&_=${Date.now()}`,
+  )}`;
 
   // Parse show number from HTML
   const $doc = new DOMParser().parseFromString(
@@ -186,9 +184,9 @@ export const getQuestion = async (
       .replace(/(\w+)/g, `${RUN_DELIMITER}$1${RUN_DELIMITER}`)
       .split(RUN_DELIMITER)
       .filter(run => run.length)
-      .map(run => (run.charAt(0).match(/\w/) ? run.length : run)),
+      .map(run => (/\w/.test(run.charAt(0)) ? run.length : run)),
     solved: false,
-    tiles: tileString.split("").map((char, id) => ({ char, id, used: false })),
     tileString,
+    tiles: tileString.split("").map((char, id) => ({ char, id, used: false })),
   };
 };

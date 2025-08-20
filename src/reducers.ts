@@ -118,10 +118,7 @@ const getStateWithAwardedHints = (state: State) => {
   return { ...state, hints: state.hints + hintsToAward };
 };
 const rootReducer = (
-  state: State = {
-    hints: 20,
-    seenQuestions: [],
-  },
+  state: State = { hints: 20, seenQuestions: [] },
   action: ActionObject,
 ) => {
   state = copy(state);
@@ -132,7 +129,7 @@ const rootReducer = (
   switch (action.type) {
     case "HINT_USE": {
       // Validate action
-      let question = state.currentQuestion;
+      const question = state.currentQuestion;
       const hints = state.hints;
       if (hints < 1 || !question || question.solved) {
         break;
@@ -143,7 +140,7 @@ const rootReducer = (
 
       // Randomly select an index in the solution to hint
       const hintIndexPool: number[] = [];
-      let guessTileIds = question.guessTileIds;
+      const guessTileIds = question.guessTileIds;
       guessTileIds.forEach((id, i) => {
         (id === null || !question.tiles[id].hinted) && hintIndexPool.push(i);
       });

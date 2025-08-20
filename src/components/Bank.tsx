@@ -4,9 +4,9 @@ import { TileUI } from "./TileUI";
 import {
   BANK_EXTRAS_ROW,
   EXIT_TILE_ID,
-  HINT_TILE_ID,
   GRID_HEIGHT,
   GRID_WIDTH,
+  HINT_TILE_ID,
   SIDE_PADDING,
 } from "../constants";
 import { Tile } from "../reducers";
@@ -34,7 +34,8 @@ export const Bank = ({
   const grid = Array(GRID_HEIGHT)
     .fill(0)
     .map(() => Array(paddedWidth));
-  let x, y;
+  let x;
+  let y;
   tiles &&
     tiles.forEach((tile, i) => {
       x = (i % GRID_WIDTH) + SIDE_PADDING;
@@ -51,7 +52,8 @@ export const Bank = ({
     });
 
   // Add special tiles (exit, hint)
-  let start, end;
+  let end;
+  let start;
   for (let i = 0; i < GRID_HEIGHT; ++i) {
     for (let j = 0; j < SIDE_PADDING; ++j) {
       start = null;

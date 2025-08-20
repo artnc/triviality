@@ -7,25 +7,11 @@ import { LOCALSTORAGE, getItem } from "./util/storage";
 import { track } from "./util/tracking";
 
 export type ActionObject =
-  | {
-      type: "HINT_USE";
-    }
-  | {
-      partial: boolean;
-      state: State;
-      type: "HYDRATE";
-    }
-  | {
-      tileId: number;
-      type: "TILE_ADD";
-    }
-  | {
-      type: "TILE_REMOVE";
-    }
-  | {
-      tileId: number;
-      type: "TILE_SELECT";
-    };
+  | { type: "HINT_USE" }
+  | { partial: boolean; state: State; type: "HYDRATE" }
+  | { tileId: number; type: "TILE_ADD" }
+  | { type: "TILE_REMOVE" }
+  | { tileId: number; type: "TILE_SELECT" };
 
 type GetState = () => State;
 

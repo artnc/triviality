@@ -7,9 +7,9 @@ import { addTile, initState, removeTile, selectTile, useHint } from "./actions";
 import {
   BANK_EXTRAS_ROW,
   EXIT_TILE_ID,
-  HINT_TILE_ID,
   GRID_HEIGHT,
   GRID_WIDTH,
+  HINT_TILE_ID,
 } from "./constants";
 import App from "./containers/App";
 import rootReducer, { State } from "./reducers";
@@ -24,7 +24,7 @@ store.dispatch(initState());
 
 /* Initialize React */
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.querySelector("#root")!).render(
   <Provider store={store}>
     <App />
   </Provider>,
@@ -70,7 +70,9 @@ document.addEventListener("keydown", e => {
     case 40: {
       // Down
       const selectedTileId = currentQuestion.selectedTileId;
-      let x, y, nextTileId;
+      let nextTileId;
+      let x;
+      let y;
 
       if (selectedTileId === EXIT_TILE_ID) {
         nextTileId = selectedTileId;
